@@ -1,0 +1,5 @@
+Enabled	Choice_type	Category
+true	1	a
+false	2	b
+	3	c
+		d
