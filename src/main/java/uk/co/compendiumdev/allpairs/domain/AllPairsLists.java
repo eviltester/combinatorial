@@ -7,7 +7,15 @@ import java.util.List;
 
 public class AllPairsLists {
 
-    List<IndividualPairsList> pairsList = new ArrayList<>();
+    List<IndividualPairsList> pairsList;
+
+    public AllPairsLists(){
+        pairsList = new ArrayList<>();
+    }
+
+    public AllPairsLists(List<IndividualPairsList> givenPairsList){
+        pairsList = givenPairsList;
+    }
 
     public boolean pairExists(final String leftName, final String rightName) {
         return getPairListFor(leftName, rightName)!=null;
@@ -24,8 +32,12 @@ public class AllPairsLists {
         Collections.sort(pairsList, compareByListSize().reversed());
     }
 
-    public void sortBySizesLowToLow() {
+    public void sortBySizesLowToHigh() {
         Collections.sort(pairsList, compareByListSize());
+    }
+
+    public void sortByRandom() {
+        Collections.shuffle(pairsList);
     }
 
     private Comparator<IndividualPairsList> compareByListSize() {
@@ -90,4 +102,6 @@ public class AllPairsLists {
         }
         return true;
     }
+
+
 }

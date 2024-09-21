@@ -5,7 +5,6 @@ import uk.co.compendiumdev.allpairs.domain.DataSets;
 import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
 import uk.co.compendiumdev.allpairs.strategies.combinations.AllPairsCombinator;
 import uk.co.compendiumdev.allpairs.strategies.generator.GeneratorOfAllPairsColumnByColumn;
-import uk.co.compendiumdev.allpairs.strategies.generator.GeneratorOfAllPairsRowByRow;
 import uk.co.compendiumdev.allpairs.strategies.pairfinder.LeastUsedCombinationPairFinder;
 import uk.co.compendiumdev.allpairs.strategies.pairfinder.LeastUsedMatchingPairFromListFinder;
 import uk.co.compendiumdev.allpairs.strategies.sparse.SparsePopulator;
@@ -46,10 +45,14 @@ public class AllPairs {
 
 
         // now combined into set of pair tuples
-        // sort pairs list by number of combinations
-        // sorting from high to low (processing the longest lists first) results in smaller output
+        // order pairs list in different ways results in different number of rows generated
+
+        // sorting from high to low (processing the longest lists first) often results in smaller output
+        // TODO: allow passing in an order strategy or using a fixed order or partial fixed order
         pairCombinations.sortBySizesHighToLow();
-        //pairCombinations.sortBySizesLowToLow();
+        // random is hard to predict number but sometimes results in a small amount
+        //pairCombinations.sortByRandom();
+        //pairCombinations.sortBySizesLowToHigh();
 
         // created a generation strategy class to allow experimenting with different approaches
         //  e.g. sort different columns, random orders, etc.
@@ -63,6 +66,9 @@ public class AllPairs {
         AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(
                                                     new LeastUsedCombinationPairFinder(),
                                                     new LeastUsedMatchingPairFromListFinder());
+
+        System.out.printf("Populated %d rows%n", results.countRows());
+
 
     // My row by row strategy code hasn't been thought through properly and results in poor
         // output
@@ -78,7 +84,14 @@ public class AllPairs {
 
 
         // TODO: have a result checker that checks results to make sure that all pair combinations have been used
+
+        if(pairCombinations.allUsed()==false){
+            // TODO: fix usage counting
+            System.out.println("ERROR NOT ALL USED");
+        }
+
         // TODO: report on suboptimal rows i.e. rows with least unique pairs etc as this might help optimisation
+
 
         System.out.println("check results");
         lastResults = results;

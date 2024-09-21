@@ -1,7 +1,7 @@
 package uk.co.compendiumdev.allpairs.strategies.lists;
 
 import uk.co.compendiumdev.allpairs.domain.IndividualPairsList;
-import uk.co.compendiumdev.allpairs.domain.NameValuePair;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
 import uk.co.compendiumdev.allpairs.domain.PairCombination;
 
 import java.util.*;

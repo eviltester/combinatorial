@@ -2,7 +2,7 @@ package uk.co.compendiumdev.allpairs.strategies.pairfinder;
 
 import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
 import uk.co.compendiumdev.allpairs.domain.IndividualPairsList;
-import uk.co.compendiumdev.allpairs.domain.NameValuePair;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
 import uk.co.compendiumdev.allpairs.domain.PairCombination;
 import uk.co.compendiumdev.allpairs.domain.results.ResultsRow;
 

@@ -1,7 +1,7 @@
 package uk.co.compendiumdev.allpairs.strategies;
 
 import uk.co.compendiumdev.allpairs.domain.DataSets;
-import uk.co.compendiumdev.allpairs.domain.NameValuePair;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
 import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
 import uk.co.compendiumdev.allpairs.domain.results.ResultsRow;
 

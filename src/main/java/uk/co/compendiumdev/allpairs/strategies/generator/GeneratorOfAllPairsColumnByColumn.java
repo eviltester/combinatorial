@@ -2,7 +2,7 @@ package uk.co.compendiumdev.allpairs.strategies.generator;
 
 import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
 import uk.co.compendiumdev.allpairs.domain.IndividualPairsList;
-import uk.co.compendiumdev.allpairs.domain.NameValuePair;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
 import uk.co.compendiumdev.allpairs.domain.PairCombination;
 import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
 import uk.co.compendiumdev.allpairs.domain.results.ResultsRow;
@@ -33,12 +33,7 @@ public class GeneratorOfAllPairsColumnByColumn {
                     System.out.println("Processing Pair " + pairsList.getLeftName() + " " + pairsList.getRightName());
                     // match the pairsList with the existing rows pairsList
                     // rows is sets of tuples (Enabled, value) (Choice type, value), (datasetName, value)
-                    if(results.countRows()==0){
-                        // if first list then this is easy
-                        addListAsRows(pairsList);
-                    }else {
-                        addTuplesForList(pairsList, pairCombinations, pairFinderStrategy, defaultPairFinderStrategy);
-                    }
+                    addTuplesForList(pairsList, pairCombinations, pairFinderStrategy, defaultPairFinderStrategy);
                     results.markListAsProcessed(pairsList);
                 }
             }
@@ -106,8 +101,8 @@ public class GeneratorOfAllPairsColumnByColumn {
             // if we already have data for both in this row, then something went wrong somewhere
             if(aRow.containsPairNames(rowExistingFieldName, rowFieldNameToAdd)){
                 System.out.println(
-                        String.format("WARNING: row already contains a pair with these names - skipping row for this combination %s & %s",
-                                aRow.toString(), clonedPairsToAdd.getPairs().get(0).toString()));
+                        String.format("WARNING: row already contains a pair with these names - skipping row for this combination %s & %s - %s",
+                                aRow.toString(), rowExistingFieldName, rowFieldNameToAdd));
                 continue;
             }
 

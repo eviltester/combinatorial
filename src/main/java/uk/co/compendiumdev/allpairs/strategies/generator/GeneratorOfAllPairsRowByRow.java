@@ -2,16 +2,14 @@ package uk.co.compendiumdev.allpairs.strategies.generator;
 
 import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
 import uk.co.compendiumdev.allpairs.domain.IndividualPairsList;
-import uk.co.compendiumdev.allpairs.domain.NameValuePair;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
 import uk.co.compendiumdev.allpairs.domain.PairCombination;
 import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
-import uk.co.compendiumdev.allpairs.domain.results.PairsListRows;
 import uk.co.compendiumdev.allpairs.domain.results.ResultsRow;
 import uk.co.compendiumdev.allpairs.strategies.lists.ListFilter;
 import uk.co.compendiumdev.allpairs.strategies.pairfinder.LeastUsedMatchingPairFromListFinder;
 import uk.co.compendiumdev.allpairs.strategies.pairfinder.LeastUsedPairFromListFinder;
 import uk.co.compendiumdev.allpairs.strategies.pairfinder.NextPairFinderStrategy;
-import uk.co.compendiumdev.allpairs.strategies.pairfinder.RandomMatchingPairFromListFinder;
 
 import java.util.ArrayList;
 import java.util.List;

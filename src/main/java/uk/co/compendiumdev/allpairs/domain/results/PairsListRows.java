@@ -1,6 +1,6 @@
 package uk.co.compendiumdev.allpairs.domain.results;
 
-import uk.co.compendiumdev.allpairs.domain.NameValuePair;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
 import uk.co.compendiumdev.allpairs.domain.PairCombination;
 
 import java.util.ArrayList;
@@ -69,6 +69,7 @@ public class PairsListRows {
                 System.out.println(String.format(
                         "WARNING: unused pair found adding sparse pair for EXISTING ROW with value %s - %s", missingColumnValueName, extraPair.toString()));
                 aRow.addColumn(columnValueToAddToSparseRow);
+                // TODO: consider adding a single value may have now 'used' other pairs
                 extraPair.incrementUsage();
                 return;
             }

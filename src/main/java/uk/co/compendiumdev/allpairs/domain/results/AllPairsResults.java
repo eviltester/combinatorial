@@ -1,5 +1,6 @@
 package uk.co.compendiumdev.allpairs.domain.results;
 
+import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
 import uk.co.compendiumdev.allpairs.domain.IndividualPairsList;
 import uk.co.compendiumdev.allpairs.domain.PairCombination;
 import uk.co.compendiumdev.allpairs.markdown.AllPairsResultsMarkdownGenerator;
@@ -73,5 +74,9 @@ public class AllPairsResults {
         }
 
         return false;
+    }
+
+    public AllPairsLists getAllPairsList(){
+        return new AllPairsLists(processedLists);
     }
 }

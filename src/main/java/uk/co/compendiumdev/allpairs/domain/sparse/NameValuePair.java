@@ -1,4 +1,4 @@
-package uk.co.compendiumdev.allpairs.domain;
+package uk.co.compendiumdev.allpairs.domain.sparse;
 
 public class NameValuePair {
     private final String value;
