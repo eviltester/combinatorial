@@ -32,11 +32,12 @@ public class SparsePopulator {
                 final IndividualPairsList pairListToChooseFrom = selectRandomPairListContainingColumn(columnName, combinations);
                 // do we want a pair from this? or match an existing value from this pair combo?
                 String missingCol = row.isMissingOneColumnValueFromThisPair(pairListToChooseFrom.getPairs().get(0));
+                List<PairCombination> existingPairs = row.getPairs();
                 if(missingCol==null){
                     // actually no, two are missing - add a whole pair
                     final PairCombination pair = pairListToChooseFrom.filter().getLowestValueUsagePair();
                     row.addPair(pair);
-                    pair.incrementUsage();
+                    //pair.incrementUsage();
                 }else{
                     String columnToMatch=pairListToChooseFrom.getRightName();
                     if(pairListToChooseFrom.getRightName().equals(missingCol)){
@@ -46,8 +47,9 @@ public class SparsePopulator {
                     final PairCombination pairToChooseValueFrom = pairListToChooseFrom.filter().getLeastUsedPairMatching(columnToMatch, row.getCellFor(columnToMatch).getValue());
                     final String columnValueToAdd = pairToChooseValueFrom.getValueFor(missingCol);
                     row.addColumn(new NameValuePair(missingCol, columnValueToAdd));
-                    pairToChooseValueFrom.incrementUsage();
+                    //pairToChooseValueFrom.incrementUsage();
                 }
+                combinations.updateUsageForPairs(row.pairsDiffFrom(existingPairs));
             }
         }
     }

@@ -104,4 +104,11 @@ public class AllPairsLists {
     }
 
 
+    public void updateUsageForPairs(List<PairCombination> pairsToUpdate) {
+        // increment the counts for all the 'new' pairs
+        for(PairCombination pairToUpdate : pairsToUpdate){
+            this.getPairListFor(pairToUpdate.getLeftName(), pairToUpdate.getRightName()).getPair(pairToUpdate).incrementUsage();
+        }
+    }
+
 }

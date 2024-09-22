@@ -11,6 +11,7 @@ import uk.co.compendiumdev.allpairs.strategies.pairfinder.NextPairFinderStrategy
 import uk.co.compendiumdev.allpairs.strategies.pairfinder.RandomMatchingPairFromListFinder;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GeneratorOfAllPairsColumnByColumn {
     private final AllPairsLists pairCombinations;
@@ -41,22 +42,23 @@ public class GeneratorOfAllPairsColumnByColumn {
         return results;
     }
 
-    private void addListAsRows(final IndividualPairsList pairsList) {
-        for(PairCombination pair : pairsList.getPairs()){
+//    private void addListAsRows(final IndividualPairsList pairsList) {
+//        for(PairCombination pair : pairsList.getPairs()){
+//
+//            ResultsRow row = new ResultsRow();
+//
+//            System.out.println(String.format("Adding initial pair list for %s x %s as %s", pairsList.getLeftName(), pairsList.getRightName(), pair.toString()));
+//
+//            row.addPair(pair);
+//            pair.incrementUsage();
+//
+//            results.addColumnNames(pairsList.getLeftName(), pairsList.getRightName());
+//            results.addRow(row);
+//        }
+//    }
 
-            ResultsRow row = new ResultsRow();
-
-            System.out.println(String.format("Adding initial pair list for %s x %s as %s", pairsList.getLeftName(), pairsList.getRightName(), pair.toString()));
-
-            row.addPair(pair);
-            pair.incrementUsage();
-
-            results.addColumnNames(pairsList.getLeftName(), pairsList.getRightName());
-            results.addRow(row);
-        }
-    }
-
-    private void addTuplesForList(final IndividualPairsList pairsList, AllPairsLists combinations,
+    private void addTuplesForList(final IndividualPairsList pairsList,
+                                  AllPairsLists combinations,
                                   NextPairFinderStrategy pairFinderStrategy,
                                   NextPairFinderStrategy defaultPairFinderStrategy) {
 
@@ -91,6 +93,7 @@ public class GeneratorOfAllPairsColumnByColumn {
 
         // work through each row and add the missing field i.e. fieldNameToAdd
 
+        // TODO: support different row ordering strategies e.g. sparsest row first, added index, reverse adding, other?
         for(ResultsRow aRow : results.getRows()){
 
             // when processing a sparse array, sometimes we can add another pair side instead
@@ -99,7 +102,7 @@ public class GeneratorOfAllPairsColumnByColumn {
 
             // add an unmatched pair to this row
             // if we already have data for both in this row, then something went wrong somewhere
-            if(aRow.containsPairNames(rowExistingFieldName, rowFieldNameToAdd)){
+            if(aRow.containsColumnsWithValues(rowExistingFieldName, rowFieldNameToAdd)){
                 System.out.println(
                         String.format("WARNING: row already contains a pair with these names - skipping row for this combination %s & %s - %s",
                                 aRow.toString(), rowExistingFieldName, rowFieldNameToAdd));
@@ -174,20 +177,28 @@ public class GeneratorOfAllPairsColumnByColumn {
                 }
             }
 
+            // get current list of pairs in row
+            List<PairCombination> existingPairsInRow = aRow.getPairs();
+
             System.out.println(String.format("Adding pair for %s - from list %s x %s - %s", rowFieldNameToAdd, pairsList.getLeftName(),  pairsList.getRightName(), pairToAdd.toString()));
-                columnValue = new NameValuePair(rowFieldNameToAdd, pairToAdd.getValueFor(rowFieldNameToAdd));
-                aRow.addColumn(columnValue);
-                pairToAdd.incrementUsage();
+                //columnValue = new NameValuePair(rowFieldNameToAdd, pairToAdd.getValueFor(rowFieldNameToAdd));
+                aRow.addPair(pairToAdd);
+                //aRow.addColumn(columnValue);
+
+                // update the new pairs in the row
+                combinations.updateUsageForPairs(aRow.pairsDiffFrom(existingPairsInRow));
+
+                //pairToAdd.incrementUsage();
                 // delete the pair if it is still in cloned
                 clonedPairsToAdd.deleteCombination(pairToAdd);
 
-            incrementCountsForOtherPairedValuesInRow(combinations, rowExistingFieldName, rowFieldNameToAdd, aRow, columnValue);
+            //incrementCountsForOtherPairedValuesInRow(combinations, rowExistingFieldName, rowFieldNameToAdd, aRow, columnValue);
         }
 
         if(clonedPairsToAdd.getPairs().size()>0){
             // we have some sparse combinations to add, these will need filling later
             for(PairCombination extraPair : clonedPairsToAdd.getPairs()){
-                results.addPairToExistingOrNewSparseRow(extraPair);
+                results.addPairToExistingOrNewSparseRow(extraPair, combinations);
             }
         }
 
@@ -196,19 +207,19 @@ public class GeneratorOfAllPairsColumnByColumn {
     }
 
 
-    private void incrementCountsForOtherPairedValuesInRow(final AllPairsLists combinations, final String matchingField, final String valueField, final ResultsRow aRow, final NameValuePair tuple) {
-        // increment the counts for other paired values in this row, not just the matchingField
-        // allPairTuple.getName()
-        final List<String> additionalColumns = aRow.getColumnNamesExcluding(matchingField, valueField);
-        // mark all pairs between additionalMatches
-        for(String additionalMatch : additionalColumns){
-            NameValuePair additionalTupleToMatch = aRow.getCellFor(additionalMatch);
-            // create tuple for, but don't add to row - this is to increase counts
-            final IndividualPairsList listToUpdate = combinations.getPairListFor(additionalTupleToMatch.getName(), valueField);
-            final PairCombination pairMentionedInRow = listToUpdate.getPair(additionalTupleToMatch.getName(),additionalTupleToMatch.getValue(), valueField, tuple.getValue());
-            System.out.println(String.format("Incrementing count for %s x %s - %s, %s from %d to %d", additionalTupleToMatch.getName(), valueField, additionalTupleToMatch.getValue(), tuple.getValue(), pairMentionedInRow.getUsageCount(), pairMentionedInRow.getUsageCount()+1));
-            pairMentionedInRow.incrementUsage();
-        }
-    }
+//    private void incrementCountsForOtherPairedValuesInRow(final AllPairsLists combinations, final String matchingField, final String valueField, final ResultsRow aRow, final NameValuePair tuple) {
+//        // increment the counts for other paired values in this row, not just the matchingField
+//        // allPairTuple.getName()
+//        final List<String> additionalColumns = aRow.getColumnNamesExcluding(matchingField, valueField);
+//        // mark all pairs between additionalMatches
+//        for(String additionalMatch : additionalColumns){
+//            NameValuePair additionalTupleToMatch = aRow.getCellFor(additionalMatch);
+//            // create tuple for, but don't add to row - this is to increase counts
+//            final IndividualPairsList listToUpdate = combinations.getPairListFor(additionalTupleToMatch.getName(), valueField);
+//            final PairCombination pairMentionedInRow = listToUpdate.getPair(additionalTupleToMatch.getName(),additionalTupleToMatch.getValue(), valueField, tuple.getValue());
+//            System.out.println(String.format("Incrementing count for %s x %s - %s, %s from %d to %d", additionalTupleToMatch.getName(), valueField, additionalTupleToMatch.getValue(), tuple.getValue(), pairMentionedInRow.getUsageCount(), pairMentionedInRow.getUsageCount()+1));
+//            pairMentionedInRow.incrementUsage();
+//        }
+//    }
 
 }

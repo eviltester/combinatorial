@@ -1,5 +1,6 @@
 package uk.co.compendiumdev.allpairs.domain.results;
 
+import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
 import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
 import uk.co.compendiumdev.allpairs.domain.PairCombination;
 
@@ -49,7 +50,7 @@ public class PairsListRows {
         System.out.println("\n");
     }
 
-    public void addPairToExistingOrNewSparseRow(final PairCombination extraPair) {
+    public void addPairToExistingOrNewSparseRow(final PairCombination extraPair, final AllPairsLists combinations) {
 
         // add this pair into any existing sparse row
         // for each row is there a row without one of the columnvalues?
@@ -63,14 +64,23 @@ public class PairsListRows {
                 // both columns filled in this row, skip row
                 continue;
             }
+            if(!aRow.isPairAGoodFitInThisRow(extraPair)){
+                // this pair would mismatch in the row, find another row
+                continue;
+            }
             String missingColumnValueName = aRow.isMissingOneColumnValueFromThisPair(extraPair);
             if(missingColumnValueName!=null){
                 final NameValuePair columnValueToAddToSparseRow = new NameValuePair(missingColumnValueName, extraPair.getValueFor(missingColumnValueName));
                 System.out.println(String.format(
                         "WARNING: unused pair found adding sparse pair for EXISTING ROW with value %s - %s", missingColumnValueName, extraPair.toString()));
-                aRow.addColumn(columnValueToAddToSparseRow);
+
+                // get current list of pairs in row
+                List<PairCombination> existingPairsInRow = aRow.getPairs();
+                aRow.addPair(extraPair);
+                combinations.updateUsageForPairs(aRow.pairsDiffFrom(existingPairsInRow));
+                //aRow.addColumn(columnValueToAddToSparseRow);
                 // TODO: consider adding a single value may have now 'used' other pairs
-                extraPair.incrementUsage();
+                //extraPair.incrementUsage();
                 return;
             }
         }
@@ -79,8 +89,10 @@ public class PairsListRows {
         final ResultsRow rowToAddTo = new ResultsRow();
         System.out.println(String.format(
                 "WARNING: unused pairs adding sparse pair to NEW ROW for value %s", extraPair.toString()));
+        List<PairCombination> existingPairsInRow = rowToAddTo.getPairs();
         rowToAddTo.addPair(extraPair);
-        extraPair.incrementUsage();
+        combinations.updateUsageForPairs(rowToAddTo.pairsDiffFrom(existingPairsInRow));
+        //extraPair.incrementUsage();
         rows.add(rowToAddTo);
     }
 

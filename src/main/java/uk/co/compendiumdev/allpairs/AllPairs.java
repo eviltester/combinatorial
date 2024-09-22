@@ -5,8 +5,7 @@ import uk.co.compendiumdev.allpairs.domain.DataSets;
 import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
 import uk.co.compendiumdev.allpairs.strategies.combinations.AllPairsCombinator;
 import uk.co.compendiumdev.allpairs.strategies.generator.GeneratorOfAllPairsColumnByColumn;
-import uk.co.compendiumdev.allpairs.strategies.pairfinder.LeastUsedCombinationPairFinder;
-import uk.co.compendiumdev.allpairs.strategies.pairfinder.LeastUsedMatchingPairFromListFinder;
+import uk.co.compendiumdev.allpairs.strategies.pairfinder.*;
 import uk.co.compendiumdev.allpairs.strategies.sparse.SparsePopulator;
 
 import java.util.*;
@@ -61,8 +60,8 @@ public class AllPairs {
         // todo: have a name on all strategies to aid reporting of which strategies gave best results e..g. strategy.getName()
 
         //AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new FirstMatchingPairFromListFinder());
-        //AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new RandomPairFromListFinder());
-        //AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new LeastUsedPairFromListFinder());
+        //AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new RandomMatchingPairFromListFinder());
+        // AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new LeastUsedMatchingPairFromListFinder());
         AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(
                                                     new LeastUsedCombinationPairFinder(),
                                                     new LeastUsedMatchingPairFromListFinder());

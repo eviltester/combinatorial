@@ -99,8 +99,8 @@ public class GeneratorOfAllPairsRowByRow {
                                             pairToAdd.getRightName(), pairToAdd.getRightValue()
                                             );
                             newRow.addPair(trackablePair);
-                            trackablePair.incrementUsage();
                         }
+                        pairCombinations.updateUsageForPairs(newRow.getPairs());
                         results.addRow(newRow);
                     }
                 }

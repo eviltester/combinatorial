@@ -92,6 +92,16 @@ public class PairCombination {
         return true;
     }
 
+    @Override
+    public boolean equals(Object base) {
+        if (base == this)
+            return true;
+        if (!(base instanceof PairCombination))
+            return false;
+
+        return this.matches((PairCombination) base);
+    }
+
     public String getValueFor(final String fieldName) {
         if(fieldName.equals(leftName)){
             return leftValue;

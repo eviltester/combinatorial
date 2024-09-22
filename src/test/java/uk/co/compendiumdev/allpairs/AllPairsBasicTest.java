@@ -3,6 +3,7 @@ package uk.co.compendiumdev.allpairs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.co.compendiumdev.allpairs.domain.DataSets;
+import uk.co.compendiumdev.allpairs.renderers.PictRenderer;
 
 public class AllPairsBasicTest {
 
@@ -120,10 +121,18 @@ case	colors	cars	times	pairings
 
         allPairs.generate();
 
+
+
         System.out.println(allPairs.results().renderAsMarkdown());
 
-        // last best run for us was 262 combinations
-        Assertions.assertEquals(262, allPairs.results().countRows() );
+        System.out.println();
+        System.out.println();
+        System.out.println(PictRenderer.asTxt(allPairs.data));
+        System.out.println();
+        System.out.println();
+
+        // last best run for us was 275 combinations
+        Assertions.assertEquals(275, allPairs.results().countRows() );
 
         // perl allpairs.pl jb10combos.tsv
         // results in 147 combinations

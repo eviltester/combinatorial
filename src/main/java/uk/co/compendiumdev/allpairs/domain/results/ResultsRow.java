@@ -6,6 +6,7 @@ import uk.co.compendiumdev.allpairs.domain.sparse.SparseRow;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ResultsRow {
 
@@ -33,8 +34,41 @@ public class ResultsRow {
     }
 
     public void addPair(final PairCombination pair) {
-        this.addColumn(new NameValuePair(pair.getLeftName(), pair.getLeftValue()));
-        this.addColumn(new NameValuePair(pair.getRightName(), pair.getRightValue()));
+
+        if(this.containsColumnsWithValues(pair)){ // column names only check
+            System.out.println("WARNING: Attempt to add pair to a row with pair");
+            return;
+        }
+
+        if(getCellFor(pair.getLeftName())!= null && !getCellFor(pair.getLeftName()).getValue().equals(pair.getLeftValue())) {
+            System.out.printf("ERROR: Attempt to add pair to a row with mismatched value for %s%n", pair.getLeftName());
+            throw new RuntimeException("ERROR: Attempt to add pair to a row with mismatched value");
+            //return;
+        }
+
+        if(getCellFor(pair.getRightName())!= null && !getCellFor(pair.getRightName()).getValue().equals(pair.getRightValue())) {
+            System.out.printf("ERROR: Attempt to add pair to a row with mismatched value for %s%n", pair.getRightName());
+            throw new RuntimeException("ERROR: Attempt to add pair to a row with mismatched value");
+            //return;
+        }
+
+        if(getCellFor(pair.getLeftName())== null) {
+            this.addColumn(new NameValuePair(pair.getLeftName(), pair.getLeftValue()));
+        }
+        if(getCellFor(pair.getRightName())== null) {
+            this.addColumn(new NameValuePair(pair.getRightName(), pair.getRightValue()));
+        }
+    }
+
+    public boolean containsColumnsWithValues(PairCombination pair) {
+        return containsColumnsWithValues(pair.getLeftName(), pair.getRightName());
+    }
+
+    public boolean containsColumnsWithValues(final String leftName, final String rightName) {
+        final NameValuePair leftPart = getCellFor(leftName);
+        final NameValuePair rightPart = getCellFor(rightName);
+
+        return (leftPart != null && rightPart != null);
     }
 
     public List<String> getColumnNamesExcluding(String ...fieldNames) {
@@ -80,6 +114,25 @@ public class ResultsRow {
         return true;
     }
 
+    /* A good fit is if neither column has a value, or if one column exists, with the value */
+    public boolean isPairAGoodFitInThisRow(PairCombination pair) {
+        if(this.containsColumnsWithValues(pair)){
+            // both columns already exist with values
+            return false;
+        }
+
+        if(getCellFor(pair.getLeftName())!= null && !getCellFor(pair.getLeftName()).getValue().equals(pair.getLeftValue())) {
+            // left is mismatched
+            return false;
+        }
+
+        if(getCellFor(pair.getRightName())!= null && !getCellFor(pair.getRightName()).getValue().equals(pair.getRightValue())) {
+            // right is mismatched
+            return false;
+        }
+
+        return true;
+    }
 
     public List<String> getBlankColumnNames(final List<String> columnNames) {
         return row.getEmptyColumnNames(columnNames);
@@ -120,5 +173,13 @@ public class ResultsRow {
     public List<String> getColumnNames() {
         return row.getColumnNames();
     }
+
+    /* Given a previous list of pairs, what are new in the current row */
+    public List<PairCombination> pairsDiffFrom(List<PairCombination> oldPairsInRow) {
+        List<PairCombination> currentPairsInRow = this.getPairs();
+        List<PairCombination> newPairs = currentPairsInRow.stream().filter(it -> !oldPairsInRow.contains(it)).collect(Collectors.toList());
+        return newPairs;
+    }
+
 
 }

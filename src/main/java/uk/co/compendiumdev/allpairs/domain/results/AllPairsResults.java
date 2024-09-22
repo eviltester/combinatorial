@@ -62,8 +62,8 @@ public class AllPairsResults {
         rows.debugPrintRows();
     }
 
-    public void addPairToExistingOrNewSparseRow(final PairCombination extraPair) {
-        rows.addPairToExistingOrNewSparseRow(extraPair);
+    public void addPairToExistingOrNewSparseRow(final PairCombination extraPair, AllPairsLists combinations) {
+        rows.addPairToExistingOrNewSparseRow(extraPair, combinations);
     }
 
     public boolean doesRowExist(final ResultsRow candidateRow) {
