@@ -1,4 +1,4 @@
-package uk.co.compendiumdev.allpairs.strategies;
+package uk.co.compendiumdev.allpairs.strategies.combinations;
 
 import uk.co.compendiumdev.allpairs.domain.DataSets;
 import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
@@ -14,10 +14,10 @@ import java.util.List;
 // https://rosettacode.org/wiki/Cartesian_product_of_two_or_more_lists
 // see also https://github.com/dpaukov/combinatoricslib3
 
-public class AllCombinations {
+public class CartesianProductCombinations {
     private final DataSets data;
 
-    public AllCombinations(final DataSets dataSets) {
+    public CartesianProductCombinations(final DataSets dataSets) {
         this.data = dataSets;
     }
 

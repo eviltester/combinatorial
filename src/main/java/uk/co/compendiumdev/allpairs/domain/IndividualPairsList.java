@@ -23,9 +23,11 @@ public class IndividualPairsList {
     }
 
     public boolean matchesDataSetNames(final String leftName, final String rightName) {
+
         if(leftName.equals(this.leftName) && rightName.equals(this.rightName)){
             return true;
         }
+
         if(rightName.equals(this.leftName) && leftName.equals(this.rightName)){
             return true;
         }
@@ -114,6 +116,10 @@ public class IndividualPairsList {
     public PairCombination getPair(final String name1, final String value1, final String name2, final String value2) {
 
         PairCombination comparison = new PairCombination(name1, value1, name2, value2);
+        return getPair(comparison);
+    }
+
+    public PairCombination getPair( PairCombination comparison) {
 
         for(PairCombination aPair : pairs){
             if(aPair.matches(comparison)){
@@ -122,6 +128,11 @@ public class IndividualPairsList {
         }
 
         return null;
+    }
+
+
+    public boolean containsPair(PairCombination comparison){
+        return getPair(comparison) != null;
     }
 
 
