@@ -131,8 +131,8 @@ case	colors	cars	times	pairings
         System.out.println();
         System.out.println();
 
-        // last best run for us was 275 combinations
-        Assertions.assertEquals(275, allPairs.results().countRows() );
+        // last best run for us
+        Assertions.assertEquals(283, allPairs.results().countRows() );
 
         // perl allpairs.pl jb10combos.tsv
         // results in 147 combinations

@@ -10,8 +10,9 @@ import uk.co.compendiumdev.allpairs.strategies.pairfinder.LeastUsedMatchingPairF
 import uk.co.compendiumdev.allpairs.strategies.pairfinder.NextPairFinderStrategy;
 import uk.co.compendiumdev.allpairs.strategies.pairfinder.RandomMatchingPairFromListFinder;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class GeneratorOfAllPairsColumnByColumn {
     private final AllPairsLists pairCombinations;
@@ -42,66 +43,38 @@ public class GeneratorOfAllPairsColumnByColumn {
         return results;
     }
 
-//    private void addListAsRows(final IndividualPairsList pairsList) {
-//        for(PairCombination pair : pairsList.getPairs()){
-//
-//            ResultsRow row = new ResultsRow();
-//
-//            System.out.println(String.format("Adding initial pair list for %s x %s as %s", pairsList.getLeftName(), pairsList.getRightName(), pair.toString()));
-//
-//            row.addPair(pair);
-//            pair.incrementUsage();
-//
-//            results.addColumnNames(pairsList.getLeftName(), pairsList.getRightName());
-//            results.addRow(row);
-//        }
-//    }
+
 
     private void addTuplesForList(final IndividualPairsList pairsList,
                                   AllPairsLists combinations,
                                   NextPairFinderStrategy pairFinderStrategy,
                                   NextPairFinderStrategy defaultPairFinderStrategy) {
 
-        // need to find rows to add the pair to
+        // need to find rows to add the pairs from this list to
         final IndividualPairsList clonedPairsToAdd = pairsList.cloneThis();
-        // what are we matching from the row?
 
-
-        // identify which field in the pair is already existing in the results
-        // and which is missing, which we need to add
-        String existingFieldName = clonedPairsToAdd.getLeftName();
-        String fieldNameToAdd = clonedPairsToAdd.getRightName();
-
-        if( results.hasColumnNamed(fieldNameToAdd) && results.hasColumnNamed(existingFieldName) ){
-            System.out.println(String.format("WARNING: results already exists with both fields %s, %s", existingFieldName, fieldNameToAdd));
-        }
-
-        if(!results.hasColumnNamed(existingFieldName)){
-
-            existingFieldName = clonedPairsToAdd.getRightName();
-            fieldNameToAdd = clonedPairsToAdd.getLeftName();
-
-            if(!results.hasColumnNamed(existingFieldName)){
-                System.out.println(String.format("ERROR: row contains neither field %s, %s", existingFieldName, fieldNameToAdd));
-                new RuntimeException(String.format("ERROR: row contains neither field %s, %s", existingFieldName, fieldNameToAdd));
-            }
-        }
-
-        // add the missing field as a column name
-        // todo: this assumes we actually process it - what if we don't!
-        results.addColumnNames(fieldNameToAdd);
+        // add the column names for the tuples
+        results.addColumnNames(clonedPairsToAdd.getLeftName());
+        results.addColumnNames(clonedPairsToAdd.getRightName());
 
         // work through each row and add the missing field i.e. fieldNameToAdd
 
         // TODO: support different row ordering strategies e.g. sparsest row first, added index, reverse adding, other?
-        for(ResultsRow aRow : results.getRows()){
+        List<ResultsRow> rows = results.getRows();
+
+        // by sparsest rows
+        rows.sort(Comparator.comparingInt(ResultsRow::getColumnCount));
+        // by most filled rows
+        //rows.sort(Comparator.comparingInt(ResultsRow::getColumnCount).reversed());
+
+        for(ResultsRow aRow : rows){
 
             // when processing a sparse array, sometimes we can add another pair side instead
-            String rowExistingFieldName = existingFieldName;
-            String rowFieldNameToAdd = fieldNameToAdd;
+            // assume we are starting from left to right
+            String rowExistingFieldName = clonedPairsToAdd.getLeftName();
+            String rowFieldNameToAdd = clonedPairsToAdd.getRightName();
 
-            // add an unmatched pair to this row
-            // if we already have data for both in this row, then something went wrong somewhere
+            // if we already have data for both in this row, then skip this row
             if(aRow.containsColumnsWithValues(rowExistingFieldName, rowFieldNameToAdd)){
                 System.out.println(
                         String.format("WARNING: row already contains a pair with these names - skipping row for this combination %s & %s - %s",
@@ -112,16 +85,24 @@ public class GeneratorOfAllPairsColumnByColumn {
             // just a quick check in case the row already contains the field we are looking for
             if(aRow.getCellFor(rowFieldNameToAdd)!=null){
                 // this should probably be an error
-                System.out.println(String.format("WARNING: row already contains a cell for the field we were going to add %s - %s", rowFieldNameToAdd, aRow.toString()));
+                System.out.println(String.format("WARNING: row already contains a cell for the field we were going to add %s - %s (Switching fields)", rowFieldNameToAdd, aRow.toString()));
+                // switch fields
+                rowExistingFieldName = clonedPairsToAdd.getRightName();
+                rowFieldNameToAdd = clonedPairsToAdd.getLeftName();
             }
 
             // get the data for the existingField from row
             NameValuePair existingColumnData = aRow.getCellFor(rowExistingFieldName);
+            String existingColumnDataName = null;
+            String existingColumnDataValue = null;
             if(existingColumnData==null){
-                // this should probably be an error
-                System.out.println(String.format("WARNING: could not find tuple for %s in row - assume processing sparse array, skipping row %s", rowExistingFieldName, aRow.toString()));
+                // adding a complete tuple
+                //System.out.println(String.format("WARNING: could not find tuple for %s in row - assume processing sparse array, skipping row %s", rowExistingFieldName, aRow.toString()));
                 // skip the row
-                continue;
+                //continue;
+            }else{
+                existingColumnDataName = existingColumnData.getName();
+                existingColumnDataValue = existingColumnData.getValue();
             }
 
 
@@ -145,7 +126,6 @@ public class GeneratorOfAllPairsColumnByColumn {
 
             PairCombination pairToAdd = pairFinderStrategy.findMatchingPair();
 
-            NameValuePair columnValue=null;
 
             // if we have used all the high priority items in the cloned list then use the main list
             if(pairToAdd==null) {
@@ -153,7 +133,7 @@ public class GeneratorOfAllPairsColumnByColumn {
                 // apply the same matching strategy but use the full list rather than the cloned list
                 System.out.println(String.format(
                         "WARNING: could not find a unique pair to add, applying strategy to full list for %s %s %s to %s",
-                        rowExistingFieldName, existingColumnData.getValue(), rowFieldNameToAdd, aRow));
+                        rowExistingFieldName, existingColumnDataValue, rowFieldNameToAdd, aRow));
 
                 pairToAdd = pairFinderStrategy.basedOnPairsList(pairsList).findMatchingPair();
 
@@ -161,7 +141,7 @@ public class GeneratorOfAllPairsColumnByColumn {
                 if (pairToAdd == null) {
                     System.out.println(String.format(
                             "WARNING: could not find a unique pair to add, applying default strategy to full list for %s %s %s to %s",
-                            rowExistingFieldName, existingColumnData.getValue(), rowFieldNameToAdd, aRow));
+                            rowExistingFieldName, existingColumnDataValue, rowFieldNameToAdd, aRow));
                     //pairToAdd = pairsList.filter().getLeastUsedPairMatching(existingColumnData);
                     pairToAdd = defaultPairFinderStrategy.basedOnPairsList(pairsList).matchingName(rowFieldNameToAdd).findMatchingPair();
                 } else {
@@ -172,7 +152,7 @@ public class GeneratorOfAllPairsColumnByColumn {
                 if(pairToAdd==null){
                     System.out.println(String.format(
                             "WARNING: default strategy used returned null HARD CODED random strategy being used for %s %s %s to %s",
-                            rowExistingFieldName, existingColumnData.getValue(), rowFieldNameToAdd, aRow));
+                            rowExistingFieldName, existingColumnDataValue, rowFieldNameToAdd, aRow));
                     pairToAdd = new RandomMatchingPairFromListFinder().basedOnPairsList(pairsList).withANameValuePair(existingColumnData).findMatchingPair();
                 }
             }
@@ -202,24 +182,10 @@ public class GeneratorOfAllPairsColumnByColumn {
             }
         }
 
-        results.debugPrintRows();
+        // results.debugPrintRows();
 
     }
 
 
-//    private void incrementCountsForOtherPairedValuesInRow(final AllPairsLists combinations, final String matchingField, final String valueField, final ResultsRow aRow, final NameValuePair tuple) {
-//        // increment the counts for other paired values in this row, not just the matchingField
-//        // allPairTuple.getName()
-//        final List<String> additionalColumns = aRow.getColumnNamesExcluding(matchingField, valueField);
-//        // mark all pairs between additionalMatches
-//        for(String additionalMatch : additionalColumns){
-//            NameValuePair additionalTupleToMatch = aRow.getCellFor(additionalMatch);
-//            // create tuple for, but don't add to row - this is to increase counts
-//            final IndividualPairsList listToUpdate = combinations.getPairListFor(additionalTupleToMatch.getName(), valueField);
-//            final PairCombination pairMentionedInRow = listToUpdate.getPair(additionalTupleToMatch.getName(),additionalTupleToMatch.getValue(), valueField, tuple.getValue());
-//            System.out.println(String.format("Incrementing count for %s x %s - %s, %s from %d to %d", additionalTupleToMatch.getName(), valueField, additionalTupleToMatch.getValue(), tuple.getValue(), pairMentionedInRow.getUsageCount(), pairMentionedInRow.getUsageCount()+1));
-//            pairMentionedInRow.incrementUsage();
-//        }
-//    }
 
 }

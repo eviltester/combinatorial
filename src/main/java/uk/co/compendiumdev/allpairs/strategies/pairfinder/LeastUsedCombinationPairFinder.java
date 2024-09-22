@@ -20,7 +20,14 @@ public class LeastUsedCombinationPairFinder extends AbstractNextPairFinderStrate
     }
 
     private PairCombination findLeastUsedCombinationPair(final IndividualPairsList clonedPairsToAdd, final String fieldNameToAdd, final NameValuePair matchingData, final AllPairsLists combinations, final ResultsRow aRow) {
-        return findLeastUsedCombinationPair(clonedPairsToAdd, fieldNameToAdd, matchingData.getName(), matchingData.getValue(), combinations, aRow);
+        String matchingDataFieldName = null;
+        String matchingDataFieldValue = null;
+
+        if(matchingData!=null){
+            matchingDataFieldName = matchingData.getName();
+            matchingDataFieldValue = matchingData.getValue();
+        }
+        return findLeastUsedCombinationPair(clonedPairsToAdd, fieldNameToAdd, matchingDataFieldName, matchingDataFieldValue, combinations, aRow);
     }
 
     private PairCombination findLeastUsedCombinationPair(final IndividualPairsList clonedPairsToAdd, final String fieldNameToAdd, final String existingFieldValueName, final String existingFieldValue, final AllPairsLists combinations, final ResultsRow aRow) {
@@ -60,26 +67,31 @@ public class LeastUsedCombinationPairFinder extends AbstractNextPairFinderStrate
         IndividualPairsList preferredPairsList = new IndividualPairsList(clonedPairsToAdd.getLeftName(), clonedPairsToAdd.getRightName()).addCombinations(preferredPairs);
 
 
+        // if existing is null then I don't care, just pick one
+        if(existingFieldValueName!=null){
+            // TODO: allow this to be a chain of strategies, this seems too complicated when finding least used
+            // what other lists are matched with valueField that I care about now? i.e fields in the row
+            // perhaps some of those have already been used with some of those suggested values, so they are less 'good' for us
+            final List<String> otherListNames = aRow.getColumnNamesExcluding(fieldNameToAdd, existingFieldValueName);
 
-        // what other lists are matched with valueField that I care about now? i.e fields in the row
-        // perhaps some of those have already been used with some of those suggested values, so they are less 'good' for us
-        final List<String> otherListNames = aRow.getColumnNamesExcluding(fieldNameToAdd, existingFieldValueName);
+            for(String otherListName : otherListNames){
+                final IndividualPairsList aList = combinations.getPairListFor(otherListName, fieldNameToAdd);
+                if(aList != null){
 
-        for(String otherListName : otherListNames){
-            final IndividualPairsList aList = combinations.getPairListFor(otherListName, fieldNameToAdd);
-            if(aList != null){
+                    // for this row value pair what are the items already used
+                    final NameValuePair rowValue = aRow.getCellFor(otherListName);
+                    final List<PairCombination> mostUsedOtherMatchingPairs = aList.filter().getMostUsedPairs(rowValue.getName(), rowValue.getValue());
+                    // delete these values from preferredPairs
 
-                // for this row value pair what are the items already used
-                final NameValuePair rowValue = aRow.getCellFor(otherListName);
-                final List<PairCombination> mostUsedOtherMatchingPairs = aList.filter().getMostUsedPairs(rowValue.getName(), rowValue.getValue());
-                // delete these values from preferredPairs
-
-                for(PairCombination combo : mostUsedOtherMatchingPairs){
-                    // find the value and delete it
-                    String valueOfPair= combo.getValueFor(fieldNameToAdd);
-                    preferredPairsList.deletePairsWith(fieldNameToAdd, valueOfPair);
+                    for(PairCombination combo : mostUsedOtherMatchingPairs){
+                        // find the value and delete it
+                        String valueOfPair= combo.getValueFor(fieldNameToAdd);
+                        preferredPairsList.deletePairsWith(fieldNameToAdd, valueOfPair);
+                    }
                 }
             }
+        }else{
+            System.out.println("Don't care what it is, just so long as it has low usage");
         }
 
         return preferredPairsList.filter().getLeastUsedPairMatching(existingFieldValueName, existingFieldValue);

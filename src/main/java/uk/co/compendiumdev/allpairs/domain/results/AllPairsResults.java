@@ -42,7 +42,7 @@ public class AllPairsResults {
         return rows;
     }
 
-    public Iterable<ResultsRow> getRows() {
+    public List<ResultsRow> getRows() {
         return rows.getRows();
     }
 

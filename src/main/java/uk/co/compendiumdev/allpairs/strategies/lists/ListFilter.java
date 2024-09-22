@@ -17,8 +17,14 @@ public class ListFilter {
         List<PairCombination> matches = new ArrayList<>();
 
         for(PairCombination aPair : list.getPairs()){
-            if(aPair.getValueFor(matchingFieldName).equals(valueToMatch)){
+            if(matchingFieldName == null || valueToMatch == null){
+                // we have no preference, add it anyway
                 matches.add(aPair);
+                continue;
+            }else {
+                if (aPair.getValueFor(matchingFieldName).equals(valueToMatch)) {
+                    matches.add(aPair);
+                }
             }
         }
         return matches;
@@ -37,7 +43,11 @@ public class ListFilter {
     }
 
     public PairCombination getARandomPair(final NameValuePair data) {
-        return getARandomPair(data.getName(), data.getValue());
+        if(data==null){
+            return getARandomPair(null, null);
+        }else {
+            return getARandomPair(data.getName(), data.getValue());
+        }
     }
 
     public PairCombination getARandomPair(final String matchingFieldName, final String valueToMatch) {
@@ -52,7 +62,15 @@ public class ListFilter {
     }
 
     public PairCombination getLeastUsedPairMatching(final NameValuePair data) {
-        return getLeastUsedPairMatching(data.getName(), data.getValue());
+        String name = null;
+        String value = null;
+
+        if(data!=null){
+            name = data.getName();
+            value = data.getValue();
+        }
+
+        return getLeastUsedPairMatching(name, value);
     }
 
     public PairCombination getLeastUsedPairMatching(final String matchingFieldName, final String valueToMatch) {

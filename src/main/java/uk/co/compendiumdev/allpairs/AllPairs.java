@@ -61,19 +61,25 @@ public class AllPairs {
 
         //AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new FirstMatchingPairFromListFinder());
         //AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new RandomMatchingPairFromListFinder());
-        // AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new LeastUsedMatchingPairFromListFinder());
+        //AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new LeastUsedMatchingPairFromListFinder());
         AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(
                                                     new LeastUsedCombinationPairFinder(),
                                                     new LeastUsedMatchingPairFromListFinder());
+//        AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(
+//                new RandomMatchingPairFromListFinder(),
+//                new LeastUsedCombinationPairFinder());
 
-        System.out.printf("Populated %d rows%n", results.countRows());
+
 
 
     // My row by row strategy code hasn't been thought through properly and results in poor
         // output
 //        AllPairsResults results = new GeneratorOfAllPairsRowByRow(pairCombinations).generateResults(
-//                null,
-//                null);
+//                new LeastUsedCombinationPairFinder(),
+//                new LeastUsedMatchingPairFromListFinder());
+
+
+        System.out.printf("Populated %d rows%n", results.countRows());
 
         System.out.println("Add any sparse values that have not been filled");
 

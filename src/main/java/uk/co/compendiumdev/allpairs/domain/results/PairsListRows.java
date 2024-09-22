@@ -18,7 +18,7 @@ public class PairsListRows {
         return rows.size();
     }
 
-    public Iterable<ResultsRow> getRows() {
+    public List<ResultsRow> getRows() {
         return rows;
     }
 
@@ -70,7 +70,7 @@ public class PairsListRows {
             }
             String missingColumnValueName = aRow.isMissingOneColumnValueFromThisPair(extraPair);
             if(missingColumnValueName!=null){
-                final NameValuePair columnValueToAddToSparseRow = new NameValuePair(missingColumnValueName, extraPair.getValueFor(missingColumnValueName));
+
                 System.out.println(String.format(
                         "WARNING: unused pair found adding sparse pair for EXISTING ROW with value %s - %s", missingColumnValueName, extraPair.toString()));
 
@@ -78,9 +78,7 @@ public class PairsListRows {
                 List<PairCombination> existingPairsInRow = aRow.getPairs();
                 aRow.addPair(extraPair);
                 combinations.updateUsageForPairs(aRow.pairsDiffFrom(existingPairsInRow));
-                //aRow.addColumn(columnValueToAddToSparseRow);
-                // TODO: consider adding a single value may have now 'used' other pairs
-                //extraPair.incrementUsage();
+
                 return;
             }
         }
@@ -92,7 +90,6 @@ public class PairsListRows {
         List<PairCombination> existingPairsInRow = rowToAddTo.getPairs();
         rowToAddTo.addPair(extraPair);
         combinations.updateUsageForPairs(rowToAddTo.pairsDiffFrom(existingPairsInRow));
-        //extraPair.incrementUsage();
         rows.add(rowToAddTo);
     }
 
