@@ -1,5 +1,6 @@
 package uk.co.compendiumdev.allpairs.domain.results;
 
+import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePair;
 import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
 import uk.co.compendiumdev.allpairs.domain.PairCombination;
 import uk.co.compendiumdev.allpairs.domain.sparse.SparseRow;
@@ -161,8 +162,8 @@ public class ResultsRow {
         for(int leftFieldIndex = 0; leftFieldIndex < getColumnCount(); leftFieldIndex++){
             for(int rightFieldIndex = leftFieldIndex+1; rightFieldIndex < getColumnCount(); rightFieldIndex++){
                 combos.add(new PairCombination(
-                        row.getCellByIndex(leftFieldIndex).getName(), row.getCellByIndex(leftFieldIndex).getValue(),
-                        row.getCellByIndex(rightFieldIndex).getName(), row.getCellByIndex(rightFieldIndex).getValue()
+                        new WeightedNameValuePair(row.getCellByIndex(leftFieldIndex).getName(), row.getCellByIndex(leftFieldIndex).getValue()),
+                        new WeightedNameValuePair(row.getCellByIndex(rightFieldIndex).getName(), row.getCellByIndex(rightFieldIndex).getValue())
                             )
                         );
             }
@@ -182,4 +183,7 @@ public class ResultsRow {
     }
 
 
+    public boolean containsColumnWithValue(String name) {
+        return getCellFor(name)!=null;
+    }
 }

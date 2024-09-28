@@ -35,9 +35,7 @@ public class GeneratorOfAllPairsRowByRow {
         while(!pairCombinations.allUsed()){
 
             System.out.println(results.countRows());
-            if(results.countRows()==100){
-                int a=1+1;
-            }
+
             // pairFinderStrategy applies to a pair in a list
             // we need to choose a list to apply it to
             // apply the pairFinderStrategy to each list

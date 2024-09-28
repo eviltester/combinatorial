@@ -1,6 +1,7 @@
 package uk.co.compendiumdev.allpairs.strategies.lists;
 
 import uk.co.compendiumdev.allpairs.domain.IndividualPairsList;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValue;
 import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
 import uk.co.compendiumdev.allpairs.domain.PairCombination;
 
@@ -22,7 +23,7 @@ public class ListFilter {
                 matches.add(aPair);
                 continue;
             }else {
-                if (aPair.getValueFor(matchingFieldName).equals(valueToMatch)) {
+                if (aPair.getValueFor(matchingFieldName) != null && aPair.getValueFor(matchingFieldName).equals(valueToMatch)) {
                     matches.add(aPair);
                 }
             }
@@ -146,5 +147,13 @@ public class ListFilter {
         return getLowestValueUsagePairsFrom(matches);
     }
 
+
+    public List<PairCombination> getLowestValueUsagePairsMatching(NameValue node) {
+        return getLowestValueUsagePairsMatching(node.getName(), node.getValue());
+    }
+
+    public List<PairCombination> getAllMatchingPairs(NameValue node) {
+        return getAllMatchingPairs(node.getName(), node.getValue());
+    }
 
 }

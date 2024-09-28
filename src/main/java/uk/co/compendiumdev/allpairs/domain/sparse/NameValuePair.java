@@ -1,6 +1,6 @@
 package uk.co.compendiumdev.allpairs.domain.sparse;
 
-public class NameValuePair {
+public class NameValuePair implements NameValue {
     private final String value;
     private final String name;
 
@@ -11,6 +11,10 @@ public class NameValuePair {
 
     public boolean matchesName(final String name) {
         return this.name.equals(name);
+    }
+
+    public boolean matches(final String name, final String value) {
+        return this.name.equals(name) && this.value.equals(value);
     }
 
     public String getValue() {

@@ -35,7 +35,7 @@ public class GeneratorOfAllPairsColumnByColumn {
                     System.out.println("Processing Pair " + pairsList.getLeftName() + " " + pairsList.getRightName());
                     // match the pairsList with the existing rows pairsList
                     // rows is sets of tuples (Enabled, value) (Choice type, value), (datasetName, value)
-                    addTuplesForList(pairsList, pairCombinations, pairFinderStrategy, defaultPairFinderStrategy);
+                    addTuplesForList(pairsList.filteredToUnused(), pairCombinations, pairFinderStrategy, defaultPairFinderStrategy);
                     results.markListAsProcessed(pairsList);
                 }
             }
@@ -157,10 +157,11 @@ public class GeneratorOfAllPairsColumnByColumn {
                 }
             }
 
-            // get current list of pairs in row
-            List<PairCombination> existingPairsInRow = aRow.getPairs();
+            if(pairToAdd!=null) {
+                // get current list of pairs in row
+                List<PairCombination> existingPairsInRow = aRow.getPairs();
 
-            System.out.println(String.format("Adding pair for %s - from list %s x %s - %s", rowFieldNameToAdd, pairsList.getLeftName(),  pairsList.getRightName(), pairToAdd.toString()));
+                System.out.println(String.format("Adding pair for %s - from list %s x %s - %s", rowFieldNameToAdd, pairsList.getLeftName(), pairsList.getRightName(), pairToAdd.toString()));
                 //columnValue = new NameValuePair(rowFieldNameToAdd, pairToAdd.getValueFor(rowFieldNameToAdd));
                 aRow.addPair(pairToAdd);
                 //aRow.addColumn(columnValue);
@@ -171,7 +172,7 @@ public class GeneratorOfAllPairsColumnByColumn {
                 //pairToAdd.incrementUsage();
                 // delete the pair if it is still in cloned
                 clonedPairsToAdd.deleteCombination(pairToAdd);
-
+            }
             //incrementCountsForOtherPairedValuesInRow(combinations, rowExistingFieldName, rowFieldNameToAdd, aRow, columnValue);
         }
 

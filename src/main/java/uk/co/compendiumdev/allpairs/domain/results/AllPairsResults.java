@@ -79,4 +79,8 @@ public class AllPairsResults {
     public AllPairsLists getAllPairsList(){
         return new AllPairsLists(processedLists);
     }
+
+    public List<IndividualPairsList> getPairsLists(){
+        return processedLists;
+    }
 }

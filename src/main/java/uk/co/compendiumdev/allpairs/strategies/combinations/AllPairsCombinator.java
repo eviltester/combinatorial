@@ -1,15 +1,14 @@
 package uk.co.compendiumdev.allpairs.strategies.combinations;
 
-import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
-import uk.co.compendiumdev.allpairs.domain.DataSets;
-import uk.co.compendiumdev.allpairs.domain.IndividualPairsList;
-import uk.co.compendiumdev.allpairs.domain.PairCombination;
+import uk.co.compendiumdev.allpairs.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AllPairsCombinator {
     private final DataSets dataDefinitions;
+    private AllPairsLists pairCombinations;
+
 
     public AllPairsCombinator(final DataSets data) {
         this.dataDefinitions = data;
@@ -17,13 +16,14 @@ public class AllPairsCombinator {
 
     public AllPairsLists generateAllPairCombinations() {
         List<String> dataSetNames = dataDefinitions.getDataSetNames();
-        AllPairsLists pairCombinations = new AllPairsLists();
+        pairCombinations = new AllPairsLists();
 
         for(String leftName : dataSetNames){
             for(String rightName : dataSetNames){
                 // combine left and right values
                 if(!leftName.equals(rightName) && !pairCombinations.pairExists(leftName, rightName)) {
                     final IndividualPairsList list = pairCombinations.createList(leftName, rightName);
+
                     addCombinationsToList(
                                         list,
                                         dataDefinitions.getDataSetValues(leftName),
@@ -40,7 +40,9 @@ public class AllPairsCombinator {
 
         for(String left : leftValues){
             for (String right : rightValues){
-                pairs.add(new PairCombination(list.getLeftName(), left, list.getRightName(), right));
+                WeightedNameValuePair lwnvp = pairCombinations.getOrCreateWeightedNameValuePair(list.getLeftName(), left);
+                WeightedNameValuePair rwnvp = pairCombinations.getOrCreateWeightedNameValuePair(list.getRightName(), right);
+                pairs.add(new PairCombination(lwnvp, rwnvp));
             }
         }
 

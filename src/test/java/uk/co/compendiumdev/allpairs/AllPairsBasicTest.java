@@ -3,6 +3,8 @@ package uk.co.compendiumdev.allpairs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.co.compendiumdev.allpairs.domain.DataSets;
+import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
+import uk.co.compendiumdev.allpairs.renderers.GraphvizRenderer;
 import uk.co.compendiumdev.allpairs.renderers.PictRenderer;
 
 public class AllPairsBasicTest {
@@ -34,7 +36,13 @@ public class AllPairsBasicTest {
         allPairs.addDataSet("Choice_type", "1", "2", "3");
         allPairs.addDataSet("Category", "a", "b", "c", "d");
 
-        allPairs.generate();
+        AllPairsResults results = allPairs.generate();
+
+        System.out.println();
+        System.out.println();
+        System.out.println(GraphvizRenderer.asDot(results, allPairs.data));
+        System.out.println();
+        System.out.println();
 
         System.out.println(allPairs.results().renderAsMarkdown());
 
@@ -119,7 +127,7 @@ case	colors	cars	times	pairings
         allPairs.addDataSet("p8", "h01", "h02", "h03", "h04", "h05", "h06", "h07", "h08", "h09", "h10");
         allPairs.addDataSet("p9", "i01", "i02", "i03", "i04", "i05", "i06", "i07", "i08", "i09", "i10");
 
-        allPairs.generate();
+        AllPairsResults results = allPairs.generate();
 
 
 
@@ -131,8 +139,14 @@ case	colors	cars	times	pairings
         System.out.println();
         System.out.println();
 
+        System.out.println();
+        System.out.println();
+        System.out.println(GraphvizRenderer.asDot(results, allPairs.data));
+        System.out.println();
+        System.out.println();
+
         // last best run for us
-        Assertions.assertEquals(283, allPairs.results().countRows() );
+        Assertions.assertEquals(273, allPairs.results().countRows() );
 
         // perl allpairs.pl jb10combos.tsv
         // results in 147 combinations

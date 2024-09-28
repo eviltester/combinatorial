@@ -1,6 +1,9 @@
 package uk.co.compendiumdev.allpairs.domain;
 
+
 public class PairCombination {
+    private WeightedNameValuePair left;
+    private WeightedNameValuePair right;
     private String leftName;
     private String leftValue;
     private String rightName;
@@ -8,11 +11,15 @@ public class PairCombination {
     private int usageCount;
     private PairCombination clonedFrom;
 
-    public PairCombination(final String leftName, final String leftValue, final String rightName, final String rightValue) {
-        this.leftName = leftName;
-        this.rightName = rightName;
-        this.leftValue = leftValue;
-        this.rightValue = rightValue;
+    public PairCombination(WeightedNameValuePair left, WeightedNameValuePair right) {
+
+        // TODO: this was just a quick had to get the weighted pairs in, need to remove these fields
+        this.left = left;
+        this.right = right;
+        this.leftName = left.getName();
+        this.rightName = right.getName();
+        this.leftValue = left.getValue();
+        this.rightValue = right.getValue();
         this.usageCount=0;
     }
 
@@ -54,10 +61,9 @@ public class PairCombination {
 
     public PairCombination cloneThis() {
         PairCombination cloned = new PairCombination(
-                                        getLeftName(),
-                                        getLeftValue(),
-                                        getRightName(),
-                                        getRightValue());
+                                            left.cloneThis(),
+                                            right.cloneThis()
+                                    );
         cloned.setClonedFrom(this);
         return cloned;
     }
@@ -109,7 +115,7 @@ public class PairCombination {
         if(fieldName.equals(rightName)){
             return rightValue;
         }
-        System.out.println(String.format("***Warning tried to get field %s But it does not exist on this pair %s", fieldName, this.toString()));
+        //System.out.println(String.format("***Warning tried to get field %s But it does not exist on this pair %s", fieldName, this.toString()));
         return null; // no matching field
     }
 
@@ -124,5 +130,17 @@ public class PairCombination {
             return leftName;
         }
         return null; // I clearly didn't know any of the fieldnames
+    }
+
+    public WeightedNameValuePair getLeft() {
+        return left;
+    }
+
+    public WeightedNameValuePair getRight() {
+        return right;
+    }
+
+    public int getWeighting() {
+        return getUsageCount() + left.getWeighting() + right.getWeighting();
     }
 }

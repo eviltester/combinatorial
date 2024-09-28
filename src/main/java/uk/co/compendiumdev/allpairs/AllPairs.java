@@ -4,8 +4,7 @@ import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
 import uk.co.compendiumdev.allpairs.domain.DataSets;
 import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
 import uk.co.compendiumdev.allpairs.strategies.combinations.AllPairsCombinator;
-import uk.co.compendiumdev.allpairs.strategies.generator.GeneratorOfAllPairsColumnByColumn;
-import uk.co.compendiumdev.allpairs.strategies.pairfinder.*;
+import uk.co.compendiumdev.allpairs.strategies.generator.GeneratorOfAllPairsSimulatedGraph;
 import uk.co.compendiumdev.allpairs.strategies.sparse.SparsePopulator;
 
 import java.util.*;
@@ -48,9 +47,9 @@ public class AllPairs {
 
         // sorting from high to low (processing the longest lists first) often results in smaller output
         // TODO: allow passing in an order strategy or using a fixed order or partial fixed order
-        pairCombinations.sortBySizesHighToLow();
+        //pairCombinations.sortBySizesHighToLow();
         // random is hard to predict number but sometimes results in a small amount
-        //pairCombinations.sortByRandom();
+        pairCombinations.sortByRandom();
         //pairCombinations.sortBySizesLowToHigh();
 
         // created a generation strategy class to allow experimenting with different approaches
@@ -62,9 +61,12 @@ public class AllPairs {
         //AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new FirstMatchingPairFromListFinder());
         //AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new RandomMatchingPairFromListFinder());
         //AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new LeastUsedMatchingPairFromListFinder());
-        AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(
-                                                    new LeastUsedCombinationPairFinder(),
-                                                    new LeastUsedMatchingPairFromListFinder());
+
+  // todo: reinstate this
+//        AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(
+//                                                    new LeastUsedCombinationPairFinder(),
+//                                                    new LeastUsedMatchingPairFromListFinder());
+
 //        AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(
 //                new RandomMatchingPairFromListFinder(),
 //                new LeastUsedCombinationPairFinder());
@@ -77,6 +79,10 @@ public class AllPairs {
 //        AllPairsResults results = new GeneratorOfAllPairsRowByRow(pairCombinations).generateResults(
 //                new LeastUsedCombinationPairFinder(),
 //                new LeastUsedMatchingPairFromListFinder());
+
+        // TODO: create a graph based one - initially simulated using usage on pairs as weightings
+       AllPairsResults results = new GeneratorOfAllPairsSimulatedGraph(pairCombinations).generateResults();
+
 
 
         System.out.printf("Populated %d rows%n", results.countRows());

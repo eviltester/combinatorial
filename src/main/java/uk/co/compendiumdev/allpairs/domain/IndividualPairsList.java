@@ -70,6 +70,18 @@ public class IndividualPairsList {
         return cloned;
     }
 
+    public IndividualPairsList filteredToUnused() {
+        IndividualPairsList cloned = new IndividualPairsList(this.leftName, this.rightName);
+        cloned.setClonedFrom(this);
+        for(PairCombination cloneThisPair : pairs){
+            if(cloneThisPair.getUsageCount()==0) {
+                final PairCombination clonedPair = cloneThisPair.cloneThis();
+                cloned.addPair(clonedPair);
+            }
+        }
+        return cloned;
+    }
+
     private void setClonedFrom(final IndividualPairsList individualPairsList) {
         this.clonedFrom = individualPairsList;
     }
@@ -115,7 +127,7 @@ public class IndividualPairsList {
 
     public PairCombination getPair(final String name1, final String value1, final String name2, final String value2) {
 
-        PairCombination comparison = new PairCombination(name1, value1, name2, value2);
+        PairCombination comparison = new PairCombination(new WeightedNameValuePair(name1, value1), new WeightedNameValuePair(name2, value2));
         return getPair(comparison);
     }
 

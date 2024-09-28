@@ -8,9 +8,11 @@ import java.util.List;
 public class AllPairsLists {
 
     List<IndividualPairsList> pairsList;
+    List<WeightedNameValuePair> weightedNameValues;
 
     public AllPairsLists(){
         pairsList = new ArrayList<>();
+        weightedNameValues = new ArrayList<>();
     }
 
     public AllPairsLists(List<IndividualPairsList> givenPairsList){
@@ -110,5 +112,37 @@ public class AllPairsLists {
             this.getPairListFor(pairToUpdate.getLeftName(), pairToUpdate.getRightName()).getPair(pairToUpdate).incrementUsage();
         }
     }
+
+    public void updateUsageForNodes(List<PairCombination> pairsToUpdate) {
+        // increment the counts for all the nodes on the 'new' pairs
+        for(PairCombination pairToUpdate : pairsToUpdate){
+            this.getWeightedNameValuePair(pairToUpdate.getLeftName(), pairToUpdate.getLeftValue()).incrementWeighting();
+            this.getWeightedNameValuePair(pairToUpdate.getRightName(), pairToUpdate.getRightValue()).incrementWeighting();
+        }
+    }
+
+    public WeightedNameValuePair getOrCreateWeightedNameValuePair(String name, String value) {
+
+        WeightedNameValuePair wnvp;
+
+        wnvp = getWeightedNameValuePair(name, value);
+
+        if(wnvp == null){
+            wnvp = new WeightedNameValuePair(name, value);
+            weightedNameValues.add(wnvp);
+        }
+
+        return wnvp;
+    }
+
+    public WeightedNameValuePair getWeightedNameValuePair(String name, String value) {
+        for(WeightedNameValuePair aPair : weightedNameValues){
+            if(aPair.matches(name, value)){
+                return aPair;
+            }
+        }
+        return null;
+    }
+
 
 }

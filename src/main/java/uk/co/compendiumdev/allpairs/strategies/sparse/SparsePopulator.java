@@ -24,8 +24,13 @@ public class SparsePopulator {
      */
     public void fillInTheBlanks(final AllPairsLists combinations) {
 
+        int amendedRows = 0;
+
         for(ResultsRow row : results.getRows()){
             List<String> columnNamesToFill = row.getBlankColumnNames(results.getColumnNames());
+            if(!columnNamesToFill.isEmpty()){
+                amendedRows++;
+            }
             for(String columnName : columnNamesToFill){
                 // so many ways we could do this - pick a random value from data set, pick least used pairs
                 // start by picking a random pair that contains this column
@@ -52,6 +57,8 @@ public class SparsePopulator {
                 combinations.updateUsageForPairs(row.pairsDiffFrom(existingPairs));
             }
         }
+
+        System.out.println(amendedRows + " had to be completed in the sparse grid");
     }
 
     private IndividualPairsList selectRandomPairListContainingColumn(final String columnName, final AllPairsLists combinations) {

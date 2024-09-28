@@ -66,21 +66,28 @@ public class PairCombinationGenerationTest {
         Assertions.assertEquals(9, numsAndLetters.getPairCount());
 
         PairCombination[] expectedPairs = {
-                new PairCombination("numbers",  "one", "letters","a"),
-                new PairCombination("numbers", "one", "letters","b"),
-                new PairCombination("numbers",  "one", "letters","c"),
-                new PairCombination("numbers", "two", "letters","a"),
-                new PairCombination("numbers", "two", "letters","b"),
-                new PairCombination("numbers",  "two", "letters","c"),
-                new PairCombination("numbers", "three", "letters","a"),
-                new PairCombination("numbers", "three", "letters","b"),
-                new PairCombination("numbers",  "three", "letters","c")
+                createPairCombo(pairCombinations, "numbers",  "one", "letters","a"),
+                createPairCombo(pairCombinations, "numbers", "one", "letters","b"),
+                createPairCombo(pairCombinations, "numbers",  "one", "letters","c"),
+                createPairCombo(pairCombinations, "numbers", "two", "letters","a"),
+                createPairCombo(pairCombinations, "numbers", "two", "letters","b"),
+                createPairCombo(pairCombinations, "numbers",  "two", "letters","c"),
+                createPairCombo(pairCombinations, "numbers", "three", "letters","a"),
+                createPairCombo(pairCombinations, "numbers", "three", "letters","b"),
+                createPairCombo(pairCombinations, "numbers",  "three", "letters","c")
         };
 
         for (PairCombination pair : expectedPairs){
             Assertions.assertTrue(numsAndLetters.containsPair(pair));
         }
 
+    }
+
+    private PairCombination createPairCombo(AllPairsLists pairCombinations, String lname, String lvalue, String rname, String rvalue) {
+        return new PairCombination(
+                pairCombinations.getWeightedNameValuePair(lname, lvalue),
+                pairCombinations.getWeightedNameValuePair(rname, rvalue)
+        );
     }
 
     @Test
@@ -114,23 +121,23 @@ public class PairCombinationGenerationTest {
         Assertions.assertEquals(6, lettersAndAge.getPairCount());
 
         PairCombination[] expectedNumLetterPairs = {
-                new PairCombination("numbers",  "one", "letters","a"),
-                new PairCombination("numbers",  "one", "letters","b"),
+                createPairCombo(pairCombinations, "numbers",  "one", "letters","a"),
+                createPairCombo(pairCombinations, "numbers",  "one", "letters","b"),
         };
 
         PairCombination[] expectedNumAgePairs = {
-                new PairCombination("numbers",  "one", "age","18"),
-                new PairCombination("numbers",  "one", "age","19"),
-                new PairCombination("numbers",  "one", "age","20"),
+                createPairCombo(pairCombinations, "numbers",  "one", "age","18"),
+                createPairCombo(pairCombinations, "numbers",  "one", "age","19"),
+                createPairCombo(pairCombinations, "numbers",  "one", "age","20"),
         };
 
         PairCombination[] expectedLettersAgePairs = {
-                new PairCombination("letters",  "a", "age","18"),
-                new PairCombination("letters",  "a", "age","19"),
-                new PairCombination("letters",  "a", "age","20"),
-                new PairCombination("letters",  "b", "age","18"),
-                new PairCombination("letters",  "b", "age","19"),
-                new PairCombination("letters",  "b", "age","20"),
+                createPairCombo(pairCombinations, "letters",  "a", "age","18"),
+                createPairCombo(pairCombinations, "letters",  "a", "age","19"),
+                createPairCombo(pairCombinations, "letters",  "a", "age","20"),
+                createPairCombo(pairCombinations, "letters",  "b", "age","18"),
+                createPairCombo(pairCombinations, "letters",  "b", "age","19"),
+                createPairCombo(pairCombinations, "letters",  "b", "age","20"),
         };
 
         for (PairCombination pair : expectedNumLetterPairs){
