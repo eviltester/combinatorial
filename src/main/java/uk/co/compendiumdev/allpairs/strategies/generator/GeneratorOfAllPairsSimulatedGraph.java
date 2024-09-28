@@ -7,9 +7,7 @@ import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePair;
 import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
 import uk.co.compendiumdev.allpairs.domain.results.ResultsRow;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GeneratorOfAllPairsSimulatedGraph {
@@ -54,6 +52,8 @@ public class GeneratorOfAllPairsSimulatedGraph {
         // add that pair
         // start at the end node
 
+        Set<WeightedNameValuePair> nodes = new LinkedHashSet<>();
+
 
         PairCombination firstLeastUsedPair=null;
         for(IndividualPairsList pairsList : pairCombinations.getPairsLists()){
@@ -65,10 +65,17 @@ public class GeneratorOfAllPairsSimulatedGraph {
             }
         }
 
+
+
         // follow the least used path
         WeightedNameValuePair nextStartingNode = firstLeastUsedPair.getRight();
         if(nextStartingNode.getWeighting() > firstLeastUsedPair.getLeft().getWeighting()){
             nextStartingNode = firstLeastUsedPair.getLeft();
+            nodes.add(firstLeastUsedPair.getRight());
+            nodes.add(firstLeastUsedPair.getLeft());
+        }else{
+            nodes.add(firstLeastUsedPair.getLeft());
+            nodes.add(firstLeastUsedPair.getRight());
         }
 
         row.addPair(firstLeastUsedPair);
@@ -124,11 +131,22 @@ public class GeneratorOfAllPairsSimulatedGraph {
 
                 // get the next and continue
                 nextStartingNode = lastAdded;
-
+                nodes.add(lastAdded);
                 // until row is filled
                 isRowComplete = row.containsColumnWithValue(nextStartingNode.getName());
             }
         }while(!isRowComplete);
+
+        String path = "";
+        String pathPrefix = "";
+        for(WeightedNameValuePair node : nodes){
+            path = path + pathPrefix;
+            path = path + node.getName() + ":" + node.getValue();
+            pathPrefix = " -> ";
+        }
+        path = path + ";";
+
+        System.out.println(path);
 
         return row;
     }

@@ -1,9 +1,6 @@
 package uk.co.compendiumdev.allpairs.domain;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class AllPairsLists {
 
@@ -115,9 +112,15 @@ public class AllPairsLists {
 
     public void updateUsageForNodes(List<PairCombination> pairsToUpdate) {
         // increment the counts for all the nodes on the 'new' pairs
+        Set<WeightedNameValuePair> nodes = new HashSet<>();
+
         for(PairCombination pairToUpdate : pairsToUpdate){
-            this.getWeightedNameValuePair(pairToUpdate.getLeftName(), pairToUpdate.getLeftValue()).incrementWeighting();
-            this.getWeightedNameValuePair(pairToUpdate.getRightName(), pairToUpdate.getRightValue()).incrementWeighting();
+            nodes.add(pairToUpdate.getLeft());
+            nodes.add(pairToUpdate.getRight());
+        }
+
+        for(WeightedNameValuePair node : nodes){
+            node.incrementWeighting();
         }
     }
 

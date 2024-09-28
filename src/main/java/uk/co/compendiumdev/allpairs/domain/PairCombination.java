@@ -71,7 +71,7 @@ public class PairCombination {
     @Override
     public String toString() {
         String isCloned = this.clonedFrom!=null ? "(cloned)" : "";
-        return String.format("%s x %s - %s, %s (used %d) %s", getLeftName(), getRightName(), getLeftValue(), getRightValue(), getUsageCount(), isCloned);
+        return String.format("%s (used %d) x %s (used %d) - %s, %s (used %d) %s", getLeftName(), getLeft().getWeighting(), getRightName(), getRight().getWeighting(), getLeftValue(), getRightValue(), getUsageCount(), isCloned);
     }
 
     public boolean hasValueFor(final String aFieldName) {
