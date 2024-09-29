@@ -146,7 +146,7 @@ case	colors	cars	times	pairings
         System.out.println();
 
         // last best run for us
-        Assertions.assertEquals(273, allPairs.results().countRows() );
+        Assertions.assertEquals(208, allPairs.results().countRows() );
 
         // perl allpairs.pl jb10combos.tsv
         // results in 147 combinations
@@ -244,4 +244,26 @@ case	Destination	Class	Seat Preference	pairings
 9	USA	Business Class	~Aisle	1
  */
     }
+
+
+    @Test
+    public void allPairsNine() {
+
+        AllPairs allPairs = new AllPairs();
+
+        // https://www.developsense.com/pairwiseTesting.html
+
+
+        allPairs.addDataSet("A", "1", "2", "3");
+        allPairs.addDataSet("B", "4", "5", "6");
+        allPairs.addDataSet("C", "7", "8", "9");
+
+        allPairs.generate();
+
+        System.out.println(allPairs.results().renderAsMarkdown());
+
+        // todo: ideally we want 9 (achieved via manual optimisation), currently we generate 11 - allpairs generates 10 pict also generates 10
+        Assertions.assertEquals(11, allPairs.results().countRows());
+    }
+
 }

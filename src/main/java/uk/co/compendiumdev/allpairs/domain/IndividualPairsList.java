@@ -1,5 +1,8 @@
 package uk.co.compendiumdev.allpairs.domain;
 
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValueCombination;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
+import uk.co.compendiumdev.allpairs.domain.sparse.PairCombination;
 import uk.co.compendiumdev.allpairs.strategies.lists.ListFilter;
 
 import java.util.*;
@@ -7,7 +10,7 @@ import java.util.*;
 public class IndividualPairsList {
     private final String rightName;
     private final String leftName;
-    private List<PairCombination> pairs;
+    private List<WeightedNameValuePairCombination> pairs;
     private IndividualPairsList clonedFrom;
 
     public IndividualPairsList(final String leftName, final String rightName) {
@@ -42,7 +45,7 @@ public class IndividualPairsList {
         return false;
     }
 
-    public IndividualPairsList addCombinations(final List<PairCombination> pairs) {
+    public IndividualPairsList addCombinations(final List<WeightedNameValuePairCombination> pairs) {
         this.pairs = pairs;
         return this;
     }
@@ -55,7 +58,7 @@ public class IndividualPairsList {
         return this.rightName;
     }
 
-    public List<PairCombination> getPairs() {
+    public List<WeightedNameValuePairCombination> getPairs() {
         return this.pairs;
     }
 
@@ -63,8 +66,8 @@ public class IndividualPairsList {
     public IndividualPairsList cloneThis() {
         IndividualPairsList cloned = new IndividualPairsList(this.leftName, this.rightName);
         cloned.setClonedFrom(this);
-        for(PairCombination cloneThisPair : pairs){
-            final PairCombination clonedPair = cloneThisPair.cloneThis();
+        for(WeightedNameValuePairCombination cloneThisPair : pairs){
+            final WeightedNameValuePairCombination clonedPair = cloneThisPair.cloneThis();
             cloned.addPair(clonedPair);
         }
         return cloned;
@@ -73,9 +76,9 @@ public class IndividualPairsList {
     public IndividualPairsList filteredToUnused() {
         IndividualPairsList cloned = new IndividualPairsList(this.leftName, this.rightName);
         cloned.setClonedFrom(this);
-        for(PairCombination cloneThisPair : pairs){
+        for(WeightedNameValuePairCombination cloneThisPair : pairs){
             if(cloneThisPair.getUsageCount()==0) {
-                final PairCombination clonedPair = cloneThisPair.cloneThis();
+                final WeightedNameValuePairCombination clonedPair = cloneThisPair.cloneThis();
                 cloned.addPair(clonedPair);
             }
         }
@@ -86,7 +89,7 @@ public class IndividualPairsList {
         this.clonedFrom = individualPairsList;
     }
 
-    private PairCombination addPair(final PairCombination pairCombination) {
+    private WeightedNameValuePairCombination addPair(final WeightedNameValuePairCombination pairCombination) {
         this.pairs.add(pairCombination);
         return pairCombination;
     }
@@ -100,8 +103,8 @@ public class IndividualPairsList {
      note: this uses the values, rather than the pair object reference so we
      might be deleting a pair from a cloned list
      */
-    public void deleteCombination(PairCombination baseCombination) {
-        PairCombination deleteThis=null;
+    public void deleteCombination(WeightedNameValuePairCombination baseCombination) {
+        WeightedNameValuePairCombination deleteThis=null;
 
         // check that list matches pair combo
         if(!baseCombination.hasValueFor(leftName) || !baseCombination.hasValueFor(rightName)){
@@ -109,7 +112,7 @@ public class IndividualPairsList {
         }
 
         // check everything in this list
-        for(PairCombination pair : pairs){
+        for(WeightedNameValuePairCombination pair : pairs){
             if(pair.matches(baseCombination)){
                     deleteThis = pair;
                 break;
@@ -121,19 +124,19 @@ public class IndividualPairsList {
         }
     }
 
-    public void removePair(final PairCombination pairToAdd) {
-        pairs.remove(pairToAdd);
+    public void removePair(final WeightedNameValuePairCombination pairToRemove) {
+        pairs.remove(pairToRemove);
     }
 
-    public PairCombination getPair(final String name1, final String value1, final String name2, final String value2) {
+    public WeightedNameValuePairCombination getPair(final String name1, final String value1, final String name2, final String value2) {
 
-        PairCombination comparison = new PairCombination(new WeightedNameValuePair(name1, value1), new WeightedNameValuePair(name2, value2));
+        NameValueCombination comparison = new NameValueCombination(new NameValuePair(name1, value1), new NameValuePair(name2, value2));
         return getPair(comparison);
     }
 
-    public PairCombination getPair( PairCombination comparison) {
+    public WeightedNameValuePairCombination getPair(PairCombination comparison) {
 
-        for(PairCombination aPair : pairs){
+        for(WeightedNameValuePairCombination aPair : pairs){
             if(aPair.matches(comparison)){
                 return aPair;
             }
@@ -153,15 +156,15 @@ public class IndividualPairsList {
      */
     public void deletePairsWith(final String fieldName, final String fieldValue) {
 
-        List<PairCombination> deleteThese = new ArrayList<>();
+        List<WeightedNameValuePairCombination> deleteThese = new ArrayList<>();
 
-        for(PairCombination pair : pairs){
+        for(WeightedNameValuePairCombination pair : pairs){
             if(pair.hasValueFor(fieldName) && pair.getValueFor(fieldName).equals(fieldValue)){
                 deleteThese.add(pair);
             }
         }
 
-        for(PairCombination deleteMe : deleteThese){
+        for(WeightedNameValuePairCombination deleteMe : deleteThese){
             pairs.remove(deleteMe);
         }
     }

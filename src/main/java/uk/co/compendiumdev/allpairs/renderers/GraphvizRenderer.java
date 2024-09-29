@@ -2,7 +2,7 @@ package uk.co.compendiumdev.allpairs.renderers;
 
 import uk.co.compendiumdev.allpairs.domain.DataSets;
 import uk.co.compendiumdev.allpairs.domain.IndividualPairsList;
-import uk.co.compendiumdev.allpairs.domain.PairCombination;
+import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePairCombination;
 import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public class GraphvizRenderer {
         }
 
         for(IndividualPairsList pairs : dataNames){
-            for(PairCombination pair : pairs.getPairs()){
+            for(WeightedNameValuePairCombination pair : pairs.getPairs()){
 
                 String node1 = String.format("%s_%s",
                     pairs.getLeftName().replace(" ", "_"),

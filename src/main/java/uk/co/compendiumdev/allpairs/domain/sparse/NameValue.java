@@ -7,4 +7,5 @@ public interface NameValue {
     String getName();
 
     boolean matches(String name, String value);
+    NameValue cloneThis();
 }

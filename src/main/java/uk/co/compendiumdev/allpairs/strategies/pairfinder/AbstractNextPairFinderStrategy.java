@@ -2,8 +2,8 @@ package uk.co.compendiumdev.allpairs.strategies.pairfinder;
 
 import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
 import uk.co.compendiumdev.allpairs.domain.IndividualPairsList;
-import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
-import uk.co.compendiumdev.allpairs.domain.PairCombination;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValue;
+import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePairCombination;
 import uk.co.compendiumdev.allpairs.domain.results.ResultsRow;
 
 public abstract class AbstractNextPairFinderStrategy implements NextPairFinderStrategy{
@@ -11,7 +11,7 @@ public abstract class AbstractNextPairFinderStrategy implements NextPairFinderSt
     protected IndividualPairsList pairsList;
     protected AllPairsLists combinations;
     protected ResultsRow currentRow;
-    protected NameValuePair populatedColumnData;
+    protected NameValue populatedColumnData;
     protected String matchingFieldName;
 
     public NextPairFinderStrategy fromCombinations(final AllPairsLists combinations) {
@@ -31,7 +31,7 @@ public abstract class AbstractNextPairFinderStrategy implements NextPairFinderSt
     }
 
     @Override
-    public NextPairFinderStrategy withANameValuePair(final NameValuePair columnData) {
+    public NextPairFinderStrategy withANameValuePair(final NameValue columnData) {
         this.populatedColumnData = columnData;
         return this;
     }
@@ -42,5 +42,5 @@ public abstract class AbstractNextPairFinderStrategy implements NextPairFinderSt
         return this;
     }
 
-    public abstract PairCombination findMatchingPair();
+    public abstract WeightedNameValuePairCombination findMatchingPair();
 }

@@ -1,5 +1,9 @@
 package uk.co.compendiumdev.allpairs.domain;
 
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValue;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValueCombination;
+import uk.co.compendiumdev.allpairs.domain.sparse.PairCombination;
+
 import java.util.*;
 
 public class AllPairsLists {
@@ -84,7 +88,7 @@ public class AllPairsLists {
 
             System.out.println(String.format("%nLIST: %s x %s", left, right));
             System.out.println(String.format("--------", left, right));
-            for(PairCombination pair : aList.getPairs()){
+            for(WeightedNameValuePairCombination pair : aList.getPairs()){
                 System.out.println(String.format("%s", pair.toString()));
             }
         }
@@ -93,7 +97,7 @@ public class AllPairsLists {
 
     public boolean allUsed() {
         for(IndividualPairsList aList : pairsList){
-            for(PairCombination pair : aList.getPairs()){
+            for(WeightedNameValuePairCombination pair : aList.getPairs()){
                 if(pair.getUsageCount()==0){
                     return false;
                 }
@@ -115,8 +119,8 @@ public class AllPairsLists {
         Set<WeightedNameValuePair> nodes = new HashSet<>();
 
         for(PairCombination pairToUpdate : pairsToUpdate){
-            nodes.add(pairToUpdate.getLeft());
-            nodes.add(pairToUpdate.getRight());
+            nodes.add(getWeightedNameValuePair(pairToUpdate.getLeftName(), pairToUpdate.getLeftValue()));
+            nodes.add(getWeightedNameValuePair(pairToUpdate.getRightName(), pairToUpdate.getRightValue()));
         }
 
         for(WeightedNameValuePair node : nodes){
@@ -148,4 +152,14 @@ public class AllPairsLists {
     }
 
 
+    public WeightedNameValuePairCombination getWeightedPairCombinationFor(PairCombination newPairCovered) {
+        WeightedNameValuePairCombination combo = null;
+        for(IndividualPairsList pairList : pairsList){
+            combo = pairList.getPair(newPairCovered);
+            if(combo != null){
+                return combo;
+            }
+        }
+        return null;
+    }
 }

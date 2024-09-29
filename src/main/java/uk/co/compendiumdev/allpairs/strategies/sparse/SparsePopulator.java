@@ -2,10 +2,12 @@ package uk.co.compendiumdev.allpairs.strategies.sparse;
 
 import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
 import uk.co.compendiumdev.allpairs.domain.IndividualPairsList;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValueCombination;
 import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
-import uk.co.compendiumdev.allpairs.domain.PairCombination;
+import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePairCombination;
 import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
 import uk.co.compendiumdev.allpairs.domain.results.ResultsRow;
+import uk.co.compendiumdev.allpairs.domain.sparse.PairCombination;
 
 import java.util.List;
 import java.util.Random;
@@ -40,7 +42,7 @@ public class SparsePopulator {
                 List<PairCombination> existingPairs = row.getPairs();
                 if(missingCol==null){
                     // actually no, two are missing - add a whole pair
-                    final PairCombination pair = pairListToChooseFrom.filter().getLowestValueUsagePair();
+                    final WeightedNameValuePairCombination pair = pairListToChooseFrom.filter().getLowestValueUsagePair();
                     row.addPair(pair);
                     //pair.incrementUsage();
                 }else{
@@ -49,7 +51,7 @@ public class SparsePopulator {
                         columnToMatch = pairListToChooseFrom.getLeftName();
                     }
 
-                    final PairCombination pairToChooseValueFrom = pairListToChooseFrom.filter().getLeastUsedPairMatching(columnToMatch, row.getCellFor(columnToMatch).getValue());
+                    final WeightedNameValuePairCombination pairToChooseValueFrom = pairListToChooseFrom.filter().getLeastUsedPairMatching(columnToMatch, row.getCellFor(columnToMatch).getValue());
                     final String columnValueToAdd = pairToChooseValueFrom.getValueFor(missingCol);
                     row.addColumn(new NameValuePair(missingCol, columnValueToAdd));
                     //pairToChooseValueFrom.incrementUsage();

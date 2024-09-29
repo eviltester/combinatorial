@@ -2,8 +2,8 @@ package uk.co.compendiumdev.allpairs.strategies.pairfinder;
 
 import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
 import uk.co.compendiumdev.allpairs.domain.IndividualPairsList;
-import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
-import uk.co.compendiumdev.allpairs.domain.PairCombination;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValue;
+import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePairCombination;
 import uk.co.compendiumdev.allpairs.domain.results.ResultsRow;
 
 import java.util.ArrayList;
@@ -15,11 +15,11 @@ import java.util.List;
 public class LeastUsedCombinationPairFinder extends AbstractNextPairFinderStrategy{
 
     @Override
-    public PairCombination findMatchingPair() {
+    public WeightedNameValuePairCombination findMatchingPair() {
         return findLeastUsedCombinationPair(pairsList, matchingFieldName, populatedColumnData, combinations, currentRow);
     }
 
-    private PairCombination findLeastUsedCombinationPair(final IndividualPairsList clonedPairsToAdd, final String fieldNameToAdd, final NameValuePair matchingData, final AllPairsLists combinations, final ResultsRow aRow) {
+    private WeightedNameValuePairCombination findLeastUsedCombinationPair(final IndividualPairsList clonedPairsToAdd, final String fieldNameToAdd, final NameValue matchingData, final AllPairsLists combinations, final ResultsRow aRow) {
         String matchingDataFieldName = null;
         String matchingDataFieldValue = null;
 
@@ -30,7 +30,7 @@ public class LeastUsedCombinationPairFinder extends AbstractNextPairFinderStrate
         return findLeastUsedCombinationPair(clonedPairsToAdd, fieldNameToAdd, matchingDataFieldName, matchingDataFieldValue, combinations, aRow);
     }
 
-    private PairCombination findLeastUsedCombinationPair(final IndividualPairsList clonedPairsToAdd, final String fieldNameToAdd, final String existingFieldValueName, final String existingFieldValue, final AllPairsLists combinations, final ResultsRow aRow) {
+    private WeightedNameValuePairCombination findLeastUsedCombinationPair(final IndividualPairsList clonedPairsToAdd, final String fieldNameToAdd, final String existingFieldValueName, final String existingFieldValue, final AllPairsLists combinations, final ResultsRow aRow) {
         /*
         When adding match pairs e.g. Desination, Seat
             - find least used values for match - Destination, Seat
@@ -40,7 +40,7 @@ public class LeastUsedCombinationPairFinder extends AbstractNextPairFinderStrate
                 * if there are things in the list then pick the least used item in that list
          */
 
-        List<PairCombination> preferredPairs = clonedPairsToAdd.filter().getLowestValueUsagePairsMatching(existingFieldValueName, existingFieldValue);
+        List<WeightedNameValuePairCombination> preferredPairs = clonedPairsToAdd.filter().getLowestValueUsagePairsMatching(existingFieldValueName, existingFieldValue);
 
 
 
@@ -79,11 +79,11 @@ public class LeastUsedCombinationPairFinder extends AbstractNextPairFinderStrate
                 if(aList != null){
 
                     // for this row value pair what are the items already used
-                    final NameValuePair rowValue = aRow.getCellFor(otherListName);
-                    final List<PairCombination> mostUsedOtherMatchingPairs = aList.filter().getMostUsedPairs(rowValue.getName(), rowValue.getValue());
+                    final NameValue rowValue = aRow.getCellFor(otherListName);
+                    final List<WeightedNameValuePairCombination> mostUsedOtherMatchingPairs = aList.filter().getMostUsedPairs(rowValue.getName(), rowValue.getValue());
                     // delete these values from preferredPairs
 
-                    for(PairCombination combo : mostUsedOtherMatchingPairs){
+                    for(WeightedNameValuePairCombination combo : mostUsedOtherMatchingPairs){
                         // find the value and delete it
                         String valueOfPair= combo.getValueFor(fieldNameToAdd);
                         preferredPairsList.deletePairsWith(fieldNameToAdd, valueOfPair);
@@ -98,18 +98,18 @@ public class LeastUsedCombinationPairFinder extends AbstractNextPairFinderStrate
 
     }
 
-    private List<PairCombination> getPreferredPairsForMatchingField(final String matchingField, final String valueField, final String valueToAdd, final AllPairsLists combinations, final ResultsRow aRow, List<PairCombination> preferredPairs, final List<String> otherListNames) {
+    private List<WeightedNameValuePairCombination> getPreferredPairsForMatchingField(final String matchingField, final String valueField, final String valueToAdd, final AllPairsLists combinations, final ResultsRow aRow, List<WeightedNameValuePairCombination> preferredPairs, final List<String> otherListNames) {
         for(String otherRowItems : otherListNames){
-            final NameValuePair rowEntry = aRow.getCellFor(otherRowItems);
+            final NameValue rowEntry = aRow.getCellFor(otherRowItems);
             final IndividualPairsList otherListToCheck = combinations.getPairListFor(otherRowItems, matchingField);
             preferredPairs = otherListToCheck.filter().getLowestValueUsagePairsMatching(rowEntry.getName(), rowEntry.getValue());
             if(preferredPairs.size()>0){
                 // get real pairs matching and fake a list
                 final IndividualPairsList realPairList = combinations.getPairListFor(valueField, matchingField);
-                List<PairCombination> fakePairs = new ArrayList<>();
-                for(PairCombination pair : preferredPairs){
+                List<WeightedNameValuePairCombination> fakePairs = new ArrayList<>();
+                for(WeightedNameValuePairCombination pair : preferredPairs){
                     String fakedValue = pair.getValueFor(matchingField);
-                    PairCombination realPair = realPairList.getPair(valueField, valueToAdd, matchingField, fakedValue);
+                    WeightedNameValuePairCombination realPair = realPairList.getPair(valueField, valueToAdd, matchingField, fakedValue);
                     fakePairs.add(realPair);
                 }
                 preferredPairs = fakePairs;

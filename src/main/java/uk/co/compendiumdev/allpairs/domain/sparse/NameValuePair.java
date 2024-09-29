@@ -25,4 +25,8 @@ public class NameValuePair implements NameValue {
         return name;
     }
 
+    public NameValuePair cloneThis(){
+        return new NameValuePair(name, value);
+    }
+
 }

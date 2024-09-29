@@ -1,45 +1,43 @@
 package uk.co.compendiumdev.allpairs.domain;
 
 
-public class PairCombination {
+import uk.co.compendiumdev.allpairs.domain.sparse.PairCombination;
+
+public class WeightedNameValuePairCombination implements PairCombination {
     private WeightedNameValuePair left;
     private WeightedNameValuePair right;
-    private String leftName;
-    private String leftValue;
-    private String rightName;
-    private String rightValue;
     private int usageCount;
-    private PairCombination clonedFrom;
+    private WeightedNameValuePairCombination clonedFrom;
 
-    public PairCombination(WeightedNameValuePair left, WeightedNameValuePair right) {
+    public WeightedNameValuePairCombination(WeightedNameValuePair left, WeightedNameValuePair right) {
 
         // TODO: this was just a quick had to get the weighted pairs in, need to remove these fields
         this.left = left;
         this.right = right;
-        this.leftName = left.getName();
-        this.rightName = right.getName();
-        this.leftValue = left.getValue();
-        this.rightValue = right.getValue();
         this.usageCount=0;
     }
 
+    @Override
     public String getLeftName() {
-        return this.leftName;
+        return left.getName();
     }
 
+    @Override
     public String getLeftValue() {
-        return this.leftValue;
+        return left.getValue();
     }
 
+    @Override
     public String getRightName() {
-        return this.rightName;
+        return right.getName();
     }
 
+    @Override
     public String getRightValue() {
-        return this.rightValue;
+        return right.getValue();
     }
 
-    public void setClonedFrom(final PairCombination clonedFrom) {
+    public void setClonedFrom(final WeightedNameValuePairCombination clonedFrom) {
         this.clonedFrom = clonedFrom;
     }
 
@@ -59,8 +57,8 @@ public class PairCombination {
         }
     }
 
-    public PairCombination cloneThis() {
-        PairCombination cloned = new PairCombination(
+    public WeightedNameValuePairCombination cloneThis() {
+        WeightedNameValuePairCombination cloned = new WeightedNameValuePairCombination(
                                             left.cloneThis(),
                                             right.cloneThis()
                                     );
@@ -74,14 +72,16 @@ public class PairCombination {
         return String.format("%s (used %d) x %s (used %d) - %s, %s (used %d) %s", getLeftName(), getLeft().getWeighting(), getRightName(), getRight().getWeighting(), getLeftValue(), getRightValue(), getUsageCount(), isCloned);
     }
 
+    @Override
     public boolean hasValueFor(final String aFieldName) {
 
         return (
-                leftName.equals(aFieldName) ||
-                rightName.equals(aFieldName)
+                left.getName().equals(aFieldName) ||
+                right.getName().equals(aFieldName)
         );
     }
 
+    @Override
     public boolean matches(final PairCombination base) {
         if(! this.hasValueFor(base.getLeftName()) || !this.hasValueFor(base.getRightName())){
             return false;
@@ -102,18 +102,19 @@ public class PairCombination {
     public boolean equals(Object base) {
         if (base == this)
             return true;
-        if (!(base instanceof PairCombination))
+        if (!(base instanceof WeightedNameValuePairCombination))
             return false;
 
-        return this.matches((PairCombination) base);
+        return this.matches((WeightedNameValuePairCombination) base);
     }
 
+    @Override
     public String getValueFor(final String fieldName) {
-        if(fieldName.equals(leftName)){
-            return leftValue;
+        if(fieldName.equals(left.getName())){
+            return left.getValue();
         }
-        if(fieldName.equals(rightName)){
-            return rightValue;
+        if(fieldName.equals(right.getName())){
+            return right.getValue();
         }
         //System.out.println(String.format("***Warning tried to get field %s But it does not exist on this pair %s", fieldName, this.toString()));
         return null; // no matching field
@@ -122,25 +123,32 @@ public class PairCombination {
     /*
         I only know one field name, I want to know the other one
      */
+    @Override
     public String getOtherFieldName(final String existingFieldValueName) {
-        if(leftName.equals(existingFieldValueName)){
-            return rightName;
+        if(left.getName().equals(existingFieldValueName)){
+            return right.getName();
         }
-        if(rightName.equals(existingFieldValueName)){
-            return leftName;
+        if(right.getName().equals(existingFieldValueName)){
+            return left.getName();
         }
         return null; // I clearly didn't know any of the fieldnames
     }
 
+    @Override
     public WeightedNameValuePair getLeft() {
         return left;
     }
 
+    @Override
     public WeightedNameValuePair getRight() {
         return right;
     }
 
     public int getWeighting() {
         return getUsageCount() + left.getWeighting() + right.getWeighting();
+    }
+
+    public String pairComboKey(){
+        return left.getName() + ":" + getLeftValue() + "_" + right.getName() + ":" + getRightValue();
     }
 }

@@ -2,10 +2,12 @@ package uk.co.compendiumdev.allpairs.strategies.generator;
 
 import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
 import uk.co.compendiumdev.allpairs.domain.IndividualPairsList;
-import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
-import uk.co.compendiumdev.allpairs.domain.PairCombination;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValue;
+import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePairCombination;
 import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
 import uk.co.compendiumdev.allpairs.domain.results.ResultsRow;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValueCombination;
+import uk.co.compendiumdev.allpairs.domain.sparse.PairCombination;
 import uk.co.compendiumdev.allpairs.strategies.lists.ListFilter;
 import uk.co.compendiumdev.allpairs.strategies.pairfinder.LeastUsedMatchingPairFromListFinder;
 import uk.co.compendiumdev.allpairs.strategies.pairfinder.LeastUsedPairFromListFinder;
@@ -40,9 +42,9 @@ public class GeneratorOfAllPairsRowByRow {
             // we need to choose a list to apply it to
             // apply the pairFinderStrategy to each list
             // apply the list identification strategy from the list of pairs
-            List<PairCombination> candidatePairs = new ArrayList<>();
+            List<WeightedNameValuePairCombination> candidatePairs = new ArrayList<>();
             for(IndividualPairsList pairList : pairCombinations.getPairsLists()){
-                final PairCombination pairFromList = new LeastUsedPairFromListFinder().basedOnPairsList(pairList).findMatchingPair();
+                final WeightedNameValuePairCombination pairFromList = new LeastUsedPairFromListFinder().basedOnPairsList(pairList).findMatchingPair();
                 if(pairFromList!=null){
                     candidatePairs.add(pairFromList);
                 }
@@ -59,7 +61,7 @@ public class GeneratorOfAllPairsRowByRow {
             //addCombinationRowsTo(rows, baseRow, candidatePairs); - haven't thought this through recursion not good at this point
 
             // build a row from all candidate pairs
-            for(PairCombination candidatePair : candidatePairs){
+            for(WeightedNameValuePairCombination candidatePair : candidatePairs){
 
                 //ResultsRow candidateRow = baseRow.cloneThis();
                 // if pair is already in the row then skip this
@@ -92,7 +94,7 @@ public class GeneratorOfAllPairsRowByRow {
                         System.out.println(String.format("add row %s", row.toString()));
                         ResultsRow newRow = new ResultsRow();
                         for(PairCombination pairToAdd : pairsToAddToNewRow){
-                            PairCombination trackablePair = pairCombinations.getPairListFor(pairToAdd.getLeftName(), pairToAdd.getRightName()).
+                            WeightedNameValuePairCombination trackablePair = pairCombinations.getPairListFor(pairToAdd.getLeftName(), pairToAdd.getRightName()).
                                     getPair(pairToAdd.getLeftName(), pairToAdd.getLeftValue(),
                                             pairToAdd.getRightName(), pairToAdd.getRightValue()
                                             );
@@ -111,7 +113,7 @@ public class GeneratorOfAllPairsRowByRow {
 
     private void addCombinationRowsTo(final List<ResultsRow> rows,
                                       final ResultsRow baseRow,
-                                      final List<PairCombination> candidatePairs) {
+                                      final List<WeightedNameValuePairCombination> candidatePairs) {
 
         if(candidatePairs.size()==0){
             // done them all - unwind
@@ -120,7 +122,7 @@ public class GeneratorOfAllPairsRowByRow {
             return;
         }
 
-        for(PairCombination candidatePair : candidatePairs){
+        for(WeightedNameValuePairCombination candidatePair : candidatePairs){
 
             ResultsRow candidateRow = baseRow.cloneThis();
             // if pair is already in the row then unwind this path
@@ -129,15 +131,15 @@ public class GeneratorOfAllPairsRowByRow {
             }
             addPairOrPartOfPairToRow(candidatePair, candidateRow);
             // now try and add all other pairs into that i.e. candidatePairs - candidatePair
-            List<PairCombination> nextCandidatePairs = getNewCandidatePairListWithout(candidatePairs, candidatePair);
+            List<WeightedNameValuePairCombination> nextCandidatePairs = getNewCandidatePairListWithout(candidatePairs, candidatePair);
             addCombinationRowsTo(rows, candidateRow, nextCandidatePairs);
         }
     }
 
-    private List<PairCombination> getNewCandidatePairListWithout(final List<PairCombination> candidatePairs,
-                                                                 final PairCombination removePair) {
-        List<PairCombination> newList = new ArrayList<>();
-        for(PairCombination pairToAdd : candidatePairs){
+    private List<WeightedNameValuePairCombination> getNewCandidatePairListWithout(final List<WeightedNameValuePairCombination> candidatePairs,
+                                                                                  final WeightedNameValuePairCombination removePair) {
+        List<WeightedNameValuePairCombination> newList = new ArrayList<>();
+        for(WeightedNameValuePairCombination pairToAdd : candidatePairs){
             if(!pairToAdd.matches(removePair)){
                 newList.add(pairToAdd);
             }
@@ -145,11 +147,11 @@ public class GeneratorOfAllPairsRowByRow {
         return newList;
     }
 
-    private ResultsRow addPairOrPartOfPairToRow(final PairCombination candidatePair, final ResultsRow candidateRow) {
+    private ResultsRow addPairOrPartOfPairToRow(final WeightedNameValuePairCombination candidatePair, final ResultsRow candidateRow) {
         // does row contain the pair?
         // if not then add it
-        NameValuePair leftEntry = candidateRow.getCellFor(candidatePair.getLeftName());
-        NameValuePair rightEntry = candidateRow.getCellFor(candidatePair.getRightName());
+        NameValue leftEntry = candidateRow.getCellFor(candidatePair.getLeftName());
+        NameValue rightEntry = candidateRow.getCellFor(candidatePair.getRightName());
 
         System.out.println(String.format("Recursively processing %s in %s%n", candidatePair.toString(), candidateRow.toString()));
         if(leftEntry==null && rightEntry==null){

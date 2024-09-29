@@ -1,8 +1,10 @@
 package uk.co.compendiumdev.allpairs.domain.results;
 
 import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePair;
-import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
-import uk.co.compendiumdev.allpairs.domain.PairCombination;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValue;
+import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePairCombination;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValueCombination;
+import uk.co.compendiumdev.allpairs.domain.sparse.PairCombination;
 import uk.co.compendiumdev.allpairs.domain.sparse.SparseRow;
 
 import java.util.ArrayList;
@@ -21,11 +23,11 @@ public class ResultsRow {
         row = existingRow;
     }
 
-    public void addColumn(final NameValuePair allPairTuple) {
+    public void addColumn(final NameValue allPairTuple) {
         row.addColumn(allPairTuple);
     }
 
-    public NameValuePair getCellFor(final String name) {
+    public NameValue getCellFor(final String name) {
         return row.getCellFor(name);
     }
 
@@ -34,7 +36,7 @@ public class ResultsRow {
         return row.toString();
     }
 
-    public void addPair(final PairCombination pair) {
+    public void addPair(final WeightedNameValuePairCombination pair) {
 
         if(this.containsColumnsWithValues(pair)){ // column names only check
             System.out.println("WARNING: Attempt to add pair to a row with pair");
@@ -54,20 +56,20 @@ public class ResultsRow {
         }
 
         if(getCellFor(pair.getLeftName())== null) {
-            this.addColumn(new NameValuePair(pair.getLeftName(), pair.getLeftValue()));
+            this.addColumn(pair.getLeft());
         }
         if(getCellFor(pair.getRightName())== null) {
-            this.addColumn(new NameValuePair(pair.getRightName(), pair.getRightValue()));
+            this.addColumn(pair.getRight());
         }
     }
 
-    public boolean containsColumnsWithValues(PairCombination pair) {
+    public boolean containsColumnsWithValues(WeightedNameValuePairCombination pair) {
         return containsColumnsWithValues(pair.getLeftName(), pair.getRightName());
     }
 
     public boolean containsColumnsWithValues(final String leftName, final String rightName) {
-        final NameValuePair leftPart = getCellFor(leftName);
-        final NameValuePair rightPart = getCellFor(rightName);
+        final NameValue leftPart = getCellFor(leftName);
+        final NameValue rightPart = getCellFor(rightName);
 
         return (leftPart != null && rightPart != null);
     }
@@ -80,14 +82,14 @@ public class ResultsRow {
         return row.containsValuesFor(leftName, rightName);
     }
 
-    public boolean containsPairNames(final PairCombination aPair) {
+    public boolean containsPairNames(final WeightedNameValuePairCombination aPair) {
         if(aPair==null){
             return false;
         }
         return containsPairNames(aPair.getLeftName(), aPair.getRightName());
     }
 
-    public String isMissingOneColumnValueFromThisPair(PairCombination aPair) {
+    public String isMissingOneColumnValueFromThisPair(WeightedNameValuePairCombination aPair) {
         if(getCellFor(aPair.getLeftName()) == null &&
                 getCellFor(aPair.getRightName()) !=null){
             // left named value is missing
@@ -101,9 +103,9 @@ public class ResultsRow {
         return null; // both are missing or both are present - use containsPairNames if you don't already know that
     }
 
-    public boolean containsPair(final PairCombination aPair) {
-        final NameValuePair leftPart = getCellFor(aPair.getLeftName());
-        final NameValuePair rightPart = getCellFor(aPair.getRightName());
+    public boolean containsPair(final WeightedNameValuePairCombination aPair) {
+        final NameValue leftPart = getCellFor(aPair.getLeftName());
+        final NameValue rightPart = getCellFor(aPair.getRightName());
 
         if(leftPart==null || !leftPart.getValue().equals(aPair.getLeftValue())){
             return false;
@@ -116,7 +118,7 @@ public class ResultsRow {
     }
 
     /* A good fit is if neither column has a value, or if one column exists, with the value */
-    public boolean isPairAGoodFitInThisRow(PairCombination pair) {
+    public boolean isPairAGoodFitInThisRow(WeightedNameValuePairCombination pair) {
         if(this.containsColumnsWithValues(pair)){
             // both columns already exist with values
             return false;
@@ -161,11 +163,8 @@ public class ResultsRow {
 
         for(int leftFieldIndex = 0; leftFieldIndex < getColumnCount(); leftFieldIndex++){
             for(int rightFieldIndex = leftFieldIndex+1; rightFieldIndex < getColumnCount(); rightFieldIndex++){
-                combos.add(new PairCombination(
-                        new WeightedNameValuePair(row.getCellByIndex(leftFieldIndex).getName(), row.getCellByIndex(leftFieldIndex).getValue()),
-                        new WeightedNameValuePair(row.getCellByIndex(rightFieldIndex).getName(), row.getCellByIndex(rightFieldIndex).getValue())
-                            )
-                        );
+                // Row does not contain pairs so create using existing name values
+                combos.add(new NameValueCombination(row.getCellByIndex(leftFieldIndex), row.getCellByIndex(rightFieldIndex)));
             }
         }
         return combos;

@@ -5,10 +5,10 @@ import java.util.List;
 
 public class SparseRow {
 
-    private List<NameValuePair> columns = new ArrayList<>();
+    private List<NameValue> columns = new ArrayList<>();
 
-    public void addColumn(final NameValuePair pair) {
-        final NameValuePair existingValue = getCellFor(pair.getName());
+    public void addColumn(final NameValue pair) {
+        final NameValue existingValue = getCellFor(pair.getName());
         if(existingValue==null) {
             columns.add(pair);
         }else{
@@ -21,8 +21,8 @@ public class SparseRow {
         }
     }
 
-    public NameValuePair getCellFor(final String name) {
-        for(NameValuePair tuple : columns){
+    public NameValue getCellFor(final String name) {
+        for(NameValue tuple : columns){
             if(tuple.matchesName(name)){
                 return tuple;
             }
@@ -36,7 +36,7 @@ public class SparseRow {
         StringBuilder rowOutput = new StringBuilder();
         String comma = "";
         rowOutput.append(" [");
-        for(NameValuePair tuple : columns){
+        for(NameValue tuple : columns){
             rowOutput.append(comma);
             rowOutput.append(tuple.getName());
             rowOutput.append(" : ");
@@ -63,7 +63,7 @@ public class SparseRow {
 
         List<String>columnNamesInRow = new ArrayList<>();
 
-        for(NameValuePair tuple : columns){
+        for(NameValue tuple : columns){
             columnNamesInRow.add(tuple.getName());
         }
 
@@ -86,7 +86,7 @@ public class SparseRow {
         List<String>collatedNames = new ArrayList<>();
         collatedNames.addAll(columnNames);
 
-        for(NameValuePair column :columns){
+        for(NameValue column :columns){
             collatedNames.remove(column.getName());
         }
 
@@ -96,8 +96,8 @@ public class SparseRow {
 
     public SparseRow cloneThis() {
         SparseRow clone = new SparseRow();
-        for(NameValuePair column : columns){
-            clone.addColumn(new NameValuePair(column.getName(), column.getValue()));
+        for(NameValue cell : columns){
+            clone.addColumn(cell.cloneThis());
         }
         return clone;
     }
@@ -111,8 +111,8 @@ public class SparseRow {
             return false;
         }
 
-        for(NameValuePair columnValue : columns){
-            NameValuePair compareToCell = candidateRow.getCellFor(columnValue.getName());
+        for(NameValue columnValue : columns){
+            NameValue compareToCell = candidateRow.getCellFor(columnValue.getName());
             if(compareToCell==null){
                 return false;
             }else{
@@ -125,7 +125,7 @@ public class SparseRow {
         return true;
     }
 
-    public NameValuePair getCellByIndex(int leftFieldIndex) {
+    public NameValue getCellByIndex(int leftFieldIndex) {
         return columns.get(leftFieldIndex);
     }
 
@@ -137,7 +137,7 @@ public class SparseRow {
 
         List<String> names = new ArrayList<>();
 
-        for(NameValuePair column :columns){
+        for(NameValue column :columns){
             names.add(column.getName());
         }
 

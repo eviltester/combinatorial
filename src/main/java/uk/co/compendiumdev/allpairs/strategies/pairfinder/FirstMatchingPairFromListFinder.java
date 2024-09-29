@@ -1,6 +1,6 @@
 package uk.co.compendiumdev.allpairs.strategies.pairfinder;
 
-import uk.co.compendiumdev.allpairs.domain.PairCombination;
+import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePairCombination;
 
 public class FirstMatchingPairFromListFinder extends AbstractNextPairFinderStrategy {
 
@@ -8,7 +8,7 @@ public class FirstMatchingPairFromListFinder extends AbstractNextPairFinderStrat
         using a single pairs list return the first matching pair in the list
      */
     @Override
-    public PairCombination findMatchingPair() {
+    public WeightedNameValuePairCombination findMatchingPair() {
         return pairsList.filter().getFirstMatchingPair(populatedColumnData);
     }
 }

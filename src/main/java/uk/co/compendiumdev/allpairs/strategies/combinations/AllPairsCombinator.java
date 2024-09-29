@@ -35,14 +35,14 @@ public class AllPairsCombinator {
         return pairCombinations;
     }
 
-    private List<PairCombination> addCombinationsToList(final IndividualPairsList list, final List<String> leftValues, final List<String> rightValues) {
-        List<PairCombination> pairs = new ArrayList();
+    private List<WeightedNameValuePairCombination> addCombinationsToList(final IndividualPairsList list, final List<String> leftValues, final List<String> rightValues) {
+        List<WeightedNameValuePairCombination> pairs = new ArrayList();
 
         for(String left : leftValues){
             for (String right : rightValues){
                 WeightedNameValuePair lwnvp = pairCombinations.getOrCreateWeightedNameValuePair(list.getLeftName(), left);
                 WeightedNameValuePair rwnvp = pairCombinations.getOrCreateWeightedNameValuePair(list.getRightName(), right);
-                pairs.add(new PairCombination(lwnvp, rwnvp));
+                pairs.add(new WeightedNameValuePairCombination(lwnvp, rwnvp));
             }
         }
 

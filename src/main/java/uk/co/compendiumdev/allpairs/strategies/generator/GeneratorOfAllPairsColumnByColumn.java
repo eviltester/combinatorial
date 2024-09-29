@@ -2,10 +2,12 @@ package uk.co.compendiumdev.allpairs.strategies.generator;
 
 import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
 import uk.co.compendiumdev.allpairs.domain.IndividualPairsList;
-import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
-import uk.co.compendiumdev.allpairs.domain.PairCombination;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValue;
+import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePairCombination;
 import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
 import uk.co.compendiumdev.allpairs.domain.results.ResultsRow;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValueCombination;
+import uk.co.compendiumdev.allpairs.domain.sparse.PairCombination;
 import uk.co.compendiumdev.allpairs.strategies.pairfinder.LeastUsedMatchingPairFromListFinder;
 import uk.co.compendiumdev.allpairs.strategies.pairfinder.NextPairFinderStrategy;
 import uk.co.compendiumdev.allpairs.strategies.pairfinder.RandomMatchingPairFromListFinder;
@@ -92,7 +94,7 @@ public class GeneratorOfAllPairsColumnByColumn {
             }
 
             // get the data for the existingField from row
-            NameValuePair existingColumnData = aRow.getCellFor(rowExistingFieldName);
+            NameValue existingColumnData = aRow.getCellFor(rowExistingFieldName);
             String existingColumnDataName = null;
             String existingColumnDataValue = null;
             if(existingColumnData==null){
@@ -124,7 +126,7 @@ public class GeneratorOfAllPairsColumnByColumn {
                     withANameValuePair(existingColumnData).
                     matchingName(rowFieldNameToAdd);
 
-            PairCombination pairToAdd = pairFinderStrategy.findMatchingPair();
+            WeightedNameValuePairCombination pairToAdd = pairFinderStrategy.findMatchingPair();
 
 
             // if we have used all the high priority items in the cloned list then use the main list
@@ -178,7 +180,7 @@ public class GeneratorOfAllPairsColumnByColumn {
 
         if(clonedPairsToAdd.getPairs().size()>0){
             // we have some sparse combinations to add, these will need filling later
-            for(PairCombination extraPair : clonedPairsToAdd.getPairs()){
+            for(WeightedNameValuePairCombination extraPair : clonedPairsToAdd.getPairs()){
                 results.addPairToExistingOrNewSparseRow(extraPair, combinations);
             }
         }

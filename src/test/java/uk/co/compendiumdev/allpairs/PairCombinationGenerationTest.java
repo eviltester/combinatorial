@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
 import uk.co.compendiumdev.allpairs.domain.DataSets;
 import uk.co.compendiumdev.allpairs.domain.IndividualPairsList;
-import uk.co.compendiumdev.allpairs.domain.PairCombination;
+import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePairCombination;
 import uk.co.compendiumdev.allpairs.strategies.combinations.AllPairsCombinator;
 
 public class PairCombinationGenerationTest {
@@ -65,7 +65,7 @@ public class PairCombinationGenerationTest {
         Assertions.assertEquals("letters",numsAndLetters.getRightName());
         Assertions.assertEquals(9, numsAndLetters.getPairCount());
 
-        PairCombination[] expectedPairs = {
+        WeightedNameValuePairCombination[] expectedPairs = {
                 createPairCombo(pairCombinations, "numbers",  "one", "letters","a"),
                 createPairCombo(pairCombinations, "numbers", "one", "letters","b"),
                 createPairCombo(pairCombinations, "numbers",  "one", "letters","c"),
@@ -77,14 +77,14 @@ public class PairCombinationGenerationTest {
                 createPairCombo(pairCombinations, "numbers",  "three", "letters","c")
         };
 
-        for (PairCombination pair : expectedPairs){
+        for (WeightedNameValuePairCombination pair : expectedPairs){
             Assertions.assertTrue(numsAndLetters.containsPair(pair));
         }
 
     }
 
-    private PairCombination createPairCombo(AllPairsLists pairCombinations, String lname, String lvalue, String rname, String rvalue) {
-        return new PairCombination(
+    private WeightedNameValuePairCombination createPairCombo(AllPairsLists pairCombinations, String lname, String lvalue, String rname, String rvalue) {
+        return new WeightedNameValuePairCombination(
                 pairCombinations.getWeightedNameValuePair(lname, lvalue),
                 pairCombinations.getWeightedNameValuePair(rname, rvalue)
         );
@@ -120,18 +120,18 @@ public class PairCombinationGenerationTest {
         Assertions.assertEquals("age",lettersAndAge.getRightName());
         Assertions.assertEquals(6, lettersAndAge.getPairCount());
 
-        PairCombination[] expectedNumLetterPairs = {
+        WeightedNameValuePairCombination[] expectedNumLetterPairs = {
                 createPairCombo(pairCombinations, "numbers",  "one", "letters","a"),
                 createPairCombo(pairCombinations, "numbers",  "one", "letters","b"),
         };
 
-        PairCombination[] expectedNumAgePairs = {
+        WeightedNameValuePairCombination[] expectedNumAgePairs = {
                 createPairCombo(pairCombinations, "numbers",  "one", "age","18"),
                 createPairCombo(pairCombinations, "numbers",  "one", "age","19"),
                 createPairCombo(pairCombinations, "numbers",  "one", "age","20"),
         };
 
-        PairCombination[] expectedLettersAgePairs = {
+        WeightedNameValuePairCombination[] expectedLettersAgePairs = {
                 createPairCombo(pairCombinations, "letters",  "a", "age","18"),
                 createPairCombo(pairCombinations, "letters",  "a", "age","19"),
                 createPairCombo(pairCombinations, "letters",  "a", "age","20"),
@@ -140,15 +140,15 @@ public class PairCombinationGenerationTest {
                 createPairCombo(pairCombinations, "letters",  "b", "age","20"),
         };
 
-        for (PairCombination pair : expectedNumLetterPairs){
+        for (WeightedNameValuePairCombination pair : expectedNumLetterPairs){
             Assertions.assertTrue(numsAndLetters.containsPair(pair));
         }
 
-        for (PairCombination pair : expectedNumAgePairs){
+        for (WeightedNameValuePairCombination pair : expectedNumAgePairs){
             Assertions.assertTrue(numsAndAge.containsPair(pair));
         }
 
-        for (PairCombination pair : expectedLettersAgePairs){
+        for (WeightedNameValuePairCombination pair : expectedLettersAgePairs){
             Assertions.assertTrue(lettersAndAge.containsPair(pair));
         }
 

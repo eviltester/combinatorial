@@ -1,8 +1,10 @@
 package uk.co.compendiumdev.allpairs.domain.results;
 
 import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValueCombination;
 import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
-import uk.co.compendiumdev.allpairs.domain.PairCombination;
+import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePairCombination;
+import uk.co.compendiumdev.allpairs.domain.sparse.PairCombination;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -50,7 +52,7 @@ public class PairsListRows {
         System.out.println("\n");
     }
 
-    public void addPairToExistingOrNewSparseRow(final PairCombination extraPair, final AllPairsLists combinations) {
+    public void addPairToExistingOrNewSparseRow(final WeightedNameValuePairCombination extraPair, final AllPairsLists combinations) {
 
         // add this pair into any existing sparse row
         // for each row is there a row without one of the columnvalues?

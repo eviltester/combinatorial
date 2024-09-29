@@ -1,5 +1,6 @@
 package uk.co.compendiumdev.allpairs.markdown;
 
+import uk.co.compendiumdev.allpairs.domain.sparse.NameValue;
 import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
 import uk.co.compendiumdev.allpairs.domain.results.ResultsRow;
 import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
@@ -47,7 +48,7 @@ public class AllPairsResultsMarkdownGenerator {
                 rowOutput.append(String.format("| %d ", rowId));
                 for(String columnName : columnNames){
                     // at the moment it might be null as we haven't padded out sparse values
-                    final NameValuePair tuple = row.getCellFor(columnName);
+                    final NameValue tuple = row.getCellFor(columnName);
                     String tupleValue = "";
                     if (tuple != null) {
                         tupleValue = tuple.getValue();

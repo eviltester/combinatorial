@@ -2,7 +2,7 @@ package uk.co.compendiumdev.allpairs.domain.results;
 
 import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
 import uk.co.compendiumdev.allpairs.domain.IndividualPairsList;
-import uk.co.compendiumdev.allpairs.domain.PairCombination;
+import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePairCombination;
 import uk.co.compendiumdev.allpairs.markdown.AllPairsResultsMarkdownGenerator;
 
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class AllPairsResults {
         rows.debugPrintRows();
     }
 
-    public void addPairToExistingOrNewSparseRow(final PairCombination extraPair, AllPairsLists combinations) {
+    public void addPairToExistingOrNewSparseRow(final WeightedNameValuePairCombination extraPair, AllPairsLists combinations) {
         rows.addPairToExistingOrNewSparseRow(extraPair, combinations);
     }
 

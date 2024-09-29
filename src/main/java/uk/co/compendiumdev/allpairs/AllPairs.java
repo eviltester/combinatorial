@@ -4,7 +4,10 @@ import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
 import uk.co.compendiumdev.allpairs.domain.DataSets;
 import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
 import uk.co.compendiumdev.allpairs.strategies.combinations.AllPairsCombinator;
+import uk.co.compendiumdev.allpairs.strategies.generator.GeneratorOfAllPairsColumnByColumn;
 import uk.co.compendiumdev.allpairs.strategies.generator.GeneratorOfAllPairsSimulatedGraph;
+import uk.co.compendiumdev.allpairs.strategies.pairfinder.LeastUsedCombinationPairFinder;
+import uk.co.compendiumdev.allpairs.strategies.pairfinder.LeastUsedMatchingPairFromListFinder;
 import uk.co.compendiumdev.allpairs.strategies.sparse.SparsePopulator;
 
 import java.util.*;
@@ -49,7 +52,7 @@ public class AllPairs {
         // TODO: allow passing in an order strategy or using a fixed order or partial fixed order
         //pairCombinations.sortBySizesHighToLow();
         // random is hard to predict number but sometimes results in a small amount
-        pairCombinations.sortByRandom();
+        // pairCombinations.sortByRandom();
         //pairCombinations.sortBySizesLowToHigh();
 
         // created a generation strategy class to allow experimenting with different approaches

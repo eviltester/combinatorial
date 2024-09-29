@@ -2,8 +2,7 @@ package uk.co.compendiumdev.allpairs.strategies.lists;
 
 import uk.co.compendiumdev.allpairs.domain.IndividualPairsList;
 import uk.co.compendiumdev.allpairs.domain.sparse.NameValue;
-import uk.co.compendiumdev.allpairs.domain.sparse.NameValuePair;
-import uk.co.compendiumdev.allpairs.domain.PairCombination;
+import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePairCombination;
 
 import java.util.*;
 
@@ -14,10 +13,10 @@ public class ListFilter {
         this.list = individualPairsList;
     }
 
-    public List<PairCombination> getAllMatchingPairs(final String matchingFieldName, final String valueToMatch) {
-        List<PairCombination> matches = new ArrayList<>();
+    public List<WeightedNameValuePairCombination> getAllMatchingPairs(final String matchingFieldName, final String valueToMatch) {
+        List<WeightedNameValuePairCombination> matches = new ArrayList<>();
 
-        for(PairCombination aPair : list.getPairs()){
+        for(WeightedNameValuePairCombination aPair : list.getPairs()){
             if(matchingFieldName == null || valueToMatch == null){
                 // we have no preference, add it anyway
                 matches.add(aPair);
@@ -31,19 +30,19 @@ public class ListFilter {
         return matches;
     }
 
-    public PairCombination getFirstMatchingPair(final NameValuePair data) {
+    public WeightedNameValuePairCombination getFirstMatchingPair(final NameValue data) {
         return getFirstMatchingPair(data.getName(), data.getValue());
     }
 
-    public PairCombination getFirstMatchingPair(final String matchingFieldName, final String valueToMatch) {
-        final List<PairCombination> matches = getAllMatchingPairs(matchingFieldName, valueToMatch);
+    public WeightedNameValuePairCombination getFirstMatchingPair(final String matchingFieldName, final String valueToMatch) {
+        final List<WeightedNameValuePairCombination> matches = getAllMatchingPairs(matchingFieldName, valueToMatch);
         if(matches.size()==0){
             return null;
         }
         return matches.get(0);
     }
 
-    public PairCombination getARandomPair(final NameValuePair data) {
+    public WeightedNameValuePairCombination getARandomPair(final NameValue data) {
         if(data==null){
             return getARandomPair(null, null);
         }else {
@@ -51,8 +50,8 @@ public class ListFilter {
         }
     }
 
-    public PairCombination getARandomPair(final String matchingFieldName, final String valueToMatch) {
-        final List<PairCombination> matches = getAllMatchingPairs(matchingFieldName, valueToMatch);
+    public WeightedNameValuePairCombination getARandomPair(final String matchingFieldName, final String valueToMatch) {
+        final List<WeightedNameValuePairCombination> matches = getAllMatchingPairs(matchingFieldName, valueToMatch);
         int range = matches.size();
         if(range>0) {
             int value = new Random().nextInt(range);
@@ -62,7 +61,7 @@ public class ListFilter {
         }
     }
 
-    public PairCombination getLeastUsedPairMatching(final NameValuePair data) {
+    public WeightedNameValuePairCombination getLeastUsedPairMatching(final NameValue data) {
         String name = null;
         String value = null;
 
@@ -74,12 +73,12 @@ public class ListFilter {
         return getLeastUsedPairMatching(name, value);
     }
 
-    public PairCombination getLeastUsedPairMatching(final String matchingFieldName, final String valueToMatch) {
-        final List<PairCombination> matches = getLowestValueUsagePairsMatching(matchingFieldName, valueToMatch);
+    public WeightedNameValuePairCombination getLeastUsedPairMatching(final String matchingFieldName, final String valueToMatch) {
+        final List<WeightedNameValuePairCombination> matches = getLowestValueUsagePairsMatching(matchingFieldName, valueToMatch);
         return getLeastUsedPairFrom(matches);
     }
 
-    private PairCombination getLeastUsedPairFrom(final List<PairCombination> matches) {
+    private WeightedNameValuePairCombination getLeastUsedPairFrom(final List<WeightedNameValuePairCombination> matches) {
         if(list.getPairs()==null){
             return null;
         }
@@ -91,35 +90,35 @@ public class ListFilter {
 
     }
 
-    public PairCombination getLowestValueUsagePair() {
+    public WeightedNameValuePairCombination getLowestValueUsagePair() {
         return getLeastUsedPairFrom(getLowestValueUsagePairsFrom());
     }
 
-    public List<PairCombination> getLowestValueUsagePairsFrom() {
+    public List<WeightedNameValuePairCombination> getLowestValueUsagePairsFrom() {
         return getLowestValueUsagePairs(list.getPairs());
     }
 
-    public List<PairCombination> getLowestValueUsagePairsFrom(final List<PairCombination> matches) {
+    public List<WeightedNameValuePairCombination> getLowestValueUsagePairsFrom(final List<WeightedNameValuePairCombination> matches) {
         return getLowestValueUsagePairs(matches);
     }
 
-    public List<PairCombination> getMostUsedPairs(final String name, final String value) {
-        final List<PairCombination> allMatches = getAllMatchingPairs(name, value);
-        final List<PairCombination> leastUsed = getLowestValueUsagePairsMatching(name, value);
-        for(PairCombination deleteThis : leastUsed){
+    public List<WeightedNameValuePairCombination> getMostUsedPairs(final String name, final String value) {
+        final List<WeightedNameValuePairCombination> allMatches = getAllMatchingPairs(name, value);
+        final List<WeightedNameValuePairCombination> leastUsed = getLowestValueUsagePairsMatching(name, value);
+        for(WeightedNameValuePairCombination deleteThis : leastUsed){
             allMatches.remove(deleteThis);
         }
         return allMatches;
     }
 
-    private List<PairCombination> getLowestValueUsagePairs(final List<PairCombination> unsorted) {
+    private List<WeightedNameValuePairCombination> getLowestValueUsagePairs(final List<WeightedNameValuePairCombination> unsorted) {
 
-        List<PairCombination> matches = new ArrayList<>();
+        List<WeightedNameValuePairCombination> matches = new ArrayList<>();
         matches.addAll(unsorted);
 
         if(matches.size()>0) {
 
-            Comparator<PairCombination> compareByUsage = (PairCombination p1, PairCombination p2) ->
+            Comparator<WeightedNameValuePairCombination> compareByUsage = (WeightedNameValuePairCombination p1, WeightedNameValuePairCombination p2) ->
                     new Integer(p1.getUsageCount()).compareTo(
                             new Integer(p2.getUsageCount())
                     );
@@ -127,14 +126,14 @@ public class ListFilter {
             Collections.sort(matches, compareByUsage);
 
             int lowestUsage = matches.get(0).getUsageCount();
-            List<PairCombination> deleteThese = new ArrayList<>();
-            for (PairCombination combo : matches) {
+            List<WeightedNameValuePairCombination> deleteThese = new ArrayList<>();
+            for (WeightedNameValuePairCombination combo : matches) {
                 if (combo.getUsageCount() > lowestUsage) {
                     deleteThese.add(combo);
                 }
             }
 
-            for (PairCombination deleteMe : deleteThese) {
+            for (WeightedNameValuePairCombination deleteMe : deleteThese) {
                 matches.remove(deleteMe);
             }
         }
@@ -142,17 +141,17 @@ public class ListFilter {
         return matches;
     }
 
-    public List<PairCombination> getLowestValueUsagePairsMatching(final String matchingFieldName, final String valueToMatch) {
-        final List<PairCombination> matches = getAllMatchingPairs(matchingFieldName, valueToMatch);
+    public List<WeightedNameValuePairCombination> getLowestValueUsagePairsMatching(final String matchingFieldName, final String valueToMatch) {
+        final List<WeightedNameValuePairCombination> matches = getAllMatchingPairs(matchingFieldName, valueToMatch);
         return getLowestValueUsagePairsFrom(matches);
     }
 
 
-    public List<PairCombination> getLowestValueUsagePairsMatching(NameValue node) {
+    public List<WeightedNameValuePairCombination> getLowestValueUsagePairsMatching(NameValue node) {
         return getLowestValueUsagePairsMatching(node.getName(), node.getValue());
     }
 
-    public List<PairCombination> getAllMatchingPairs(NameValue node) {
+    public List<WeightedNameValuePairCombination> getAllMatchingPairs(NameValue node) {
         return getAllMatchingPairs(node.getName(), node.getValue());
     }
 
