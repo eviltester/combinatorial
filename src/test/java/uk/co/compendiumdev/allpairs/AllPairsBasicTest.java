@@ -150,6 +150,7 @@ case	colors	cars	times	pairings
 
         // perl allpairs.pl jb10combos.tsv
         // results in 147 combinations
+        // pict results in 167 combinations
     }
 
 

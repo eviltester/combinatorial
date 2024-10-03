@@ -1,7 +1,6 @@
 package uk.co.compendiumdev.allpairs.domain;
 
-import uk.co.compendiumdev.allpairs.domain.sparse.NameValue;
-import uk.co.compendiumdev.allpairs.domain.sparse.NameValueCombination;
+import uk.co.compendiumdev.allpairs.domain.graph.Graph;
 import uk.co.compendiumdev.allpairs.domain.sparse.PairCombination;
 
 import java.util.*;
@@ -160,6 +159,10 @@ public class AllPairsLists {
                 return combo;
             }
         }
+        return null;
+    }
+
+    public Graph getGraph() {
         return null;
     }
 }

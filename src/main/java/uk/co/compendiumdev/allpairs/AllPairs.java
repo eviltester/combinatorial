@@ -3,6 +3,7 @@ package uk.co.compendiumdev.allpairs;
 import uk.co.compendiumdev.allpairs.domain.AllPairsLists;
 import uk.co.compendiumdev.allpairs.domain.DataSets;
 import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
+import uk.co.compendiumdev.allpairs.renderers.GraphvizRenderer;
 import uk.co.compendiumdev.allpairs.strategies.combinations.AllPairsCombinator;
 import uk.co.compendiumdev.allpairs.strategies.generator.GeneratorOfAllPairsColumnByColumn;
 import uk.co.compendiumdev.allpairs.strategies.generator.GeneratorOfAllPairsSimulatedGraph;
@@ -41,9 +42,10 @@ public class AllPairs {
 
     public AllPairsResults generate() {
 
-        AllPairsLists pairCombinations = new AllPairsCombinator(data).
-                                                generateAllPairCombinations();
+        AllPairsCombinator combinator = new AllPairsCombinator(data);
+        AllPairsLists pairCombinations = combinator.generateAllPairCombinations();
 
+        System.out.println(GraphvizRenderer.asDot(combinator.getGraph()));
 
         // now combined into set of pair tuples
         // order pairs list in different ways results in different number of rows generated
