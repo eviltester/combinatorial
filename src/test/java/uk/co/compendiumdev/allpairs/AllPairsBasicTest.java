@@ -86,7 +86,11 @@ case	Enabled	Choice_type	Category	pairings
 
         System.out.println(allPairs.results().renderAsMarkdown());
 
-        Assertions.assertEquals(9, allPairs.results().countRows() );
+        // Simulated graph gives 9
+        //Assertions.assertEquals(9, allPairs.results().countRows() );
+
+        // graph algorithm gives 12
+        Assertions.assertEquals(12, allPairs.results().countRows() );
 
         /*
 
@@ -145,8 +149,10 @@ case	colors	cars	times	pairings
         System.out.println();
         System.out.println();
 
-        // last best run for us
-        Assertions.assertEquals(208, allPairs.results().countRows() );
+        // last best run for us with simulated graph
+        //Assertions.assertEquals(208, allPairs.results().countRows() );
+        // graph gives 186
+        Assertions.assertEquals(186, allPairs.results().countRows() );
 
         // perl allpairs.pl jb10combos.tsv
         // results in 147 combinations
@@ -171,7 +177,10 @@ case	colors	cars	times	pairings
         System.out.println(allPairs.results().renderAsMarkdown());
 
         // todo: ideally we want 9 (achieved via manual optimisation), currently we generate 11 - allpairs generates 10 pict also generates 10
-        Assertions.assertEquals(11, allPairs.results().countRows() );
+        // simulated graph gives 11
+        // Assertions.assertEquals(11, allPairs.results().countRows());
+        // graph gives 9
+        Assertions.assertEquals(9, allPairs.results().countRows());
 
 /*
 
@@ -226,7 +235,10 @@ blue	blue	green
 
         System.out.println(allPairs.results().renderAsMarkdown());
 
-        Assertions.assertEquals(9, allPairs.results().countRows() );
+        // simulated graph gives 9
+        // Assertions.assertEquals(9, allPairs.results().countRows() );
+        // graph gives 12
+        Assertions.assertEquals(12, allPairs.results().countRows() );
 
 /* allpairs.pl generates
 
@@ -264,7 +276,10 @@ case	Destination	Class	Seat Preference	pairings
         System.out.println(allPairs.results().renderAsMarkdown());
 
         // todo: ideally we want 9 (achieved via manual optimisation), currently we generate 11 - allpairs generates 10 pict also generates 10
-        Assertions.assertEquals(11, allPairs.results().countRows());
+        // simulated graph gives 11
+        // Assertions.assertEquals(11, allPairs.results().countRows());
+        // graph gives 9
+        Assertions.assertEquals(9, allPairs.results().countRows());
     }
 
 }

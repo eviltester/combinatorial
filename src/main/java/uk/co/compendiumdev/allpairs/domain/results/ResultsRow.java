@@ -1,6 +1,6 @@
 package uk.co.compendiumdev.allpairs.domain.results;
 
-import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePair;
+import uk.co.compendiumdev.allpairs.domain.graph.Edge;
 import uk.co.compendiumdev.allpairs.domain.sparse.NameValue;
 import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePairCombination;
 import uk.co.compendiumdev.allpairs.domain.sparse.NameValueCombination;
@@ -65,6 +65,10 @@ public class ResultsRow {
 
     public boolean containsColumnsWithValues(WeightedNameValuePairCombination pair) {
         return containsColumnsWithValues(pair.getLeftName(), pair.getRightName());
+    }
+
+    public boolean containsColumnsWithValues(Edge edge) {
+        return containsColumnsWithValues(edge.getLeftName(), edge.getRightName());
     }
 
     public boolean containsColumnsWithValues(final String leftName, final String rightName) {
@@ -137,12 +141,36 @@ public class ResultsRow {
         return true;
     }
 
+    public boolean isPairAGoodFitInThisRow(Edge edge) {
+        if(this.containsColumnsWithValues(edge)){
+            // both columns already exist with values
+            return false;
+        }
+
+        if(getCellFor(edge.getLeftName())!= null && !getCellFor(edge.getLeftName()).getValue().equals(edge.getLeftValue())) {
+            // left is mismatched
+            return false;
+        }
+
+        if(getCellFor(edge.getRightName())!= null && !getCellFor(edge.getRightName()).getValue().equals(edge.getRightValue())) {
+            // right is mismatched
+            return false;
+        }
+
+        return true;
+    }
+
     public List<String> getBlankColumnNames(final List<String> columnNames) {
         return row.getEmptyColumnNames(columnNames);
     }
 
     public ResultsRow cloneThis() {
         return new ResultsRow(row.cloneThis());
+    }
+
+
+    public ResultsRow copyThis() {
+        return new ResultsRow(row.copyThis());
     }
 
     public int getColumnCount() {
@@ -185,4 +213,5 @@ public class ResultsRow {
     public boolean containsColumnWithValue(String name) {
         return getCellFor(name)!=null;
     }
+
 }

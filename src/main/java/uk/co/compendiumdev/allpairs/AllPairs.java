@@ -5,10 +5,8 @@ import uk.co.compendiumdev.allpairs.domain.DataSets;
 import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
 import uk.co.compendiumdev.allpairs.renderers.GraphvizRenderer;
 import uk.co.compendiumdev.allpairs.strategies.combinations.AllPairsCombinator;
-import uk.co.compendiumdev.allpairs.strategies.generator.GeneratorOfAllPairsColumnByColumn;
 import uk.co.compendiumdev.allpairs.strategies.generator.GeneratorOfAllPairsSimulatedGraph;
-import uk.co.compendiumdev.allpairs.strategies.pairfinder.LeastUsedCombinationPairFinder;
-import uk.co.compendiumdev.allpairs.strategies.pairfinder.LeastUsedMatchingPairFromListFinder;
+import uk.co.compendiumdev.allpairs.strategies.generator.GeneratorOfAllPairsUsingGraph;
 import uk.co.compendiumdev.allpairs.strategies.sparse.SparsePopulator;
 
 import java.util.*;
@@ -63,16 +61,18 @@ public class AllPairs {
         // todo: iterate over different strategy combinations to find the best output for the list
         // todo: have a name on all strategies to aid reporting of which strategies gave best results e..g. strategy.getName()
 
-        //AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new FirstMatchingPairFromListFinder());
-        //AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new RandomMatchingPairFromListFinder());
-        //AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new LeastUsedMatchingPairFromListFinder());
+        AllPairsResults results;
+
+        // results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new FirstMatchingPairFromListFinder());
+        // results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new RandomMatchingPairFromListFinder());
+        // results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(new LeastUsedMatchingPairFromListFinder());
 
   // todo: reinstate this
 //        AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(
 //                                                    new LeastUsedCombinationPairFinder(),
 //                                                    new LeastUsedMatchingPairFromListFinder());
 
-//        AllPairsResults results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(
+//         results = new GeneratorOfAllPairsColumnByColumn(pairCombinations).generateResults(
 //                new RandomMatchingPairFromListFinder(),
 //                new LeastUsedCombinationPairFinder());
 
@@ -81,12 +81,15 @@ public class AllPairs {
 
     // My row by row strategy code hasn't been thought through properly and results in poor
         // output
-//        AllPairsResults results = new GeneratorOfAllPairsRowByRow(pairCombinations).generateResults(
+//         results = new GeneratorOfAllPairsRowByRow(pairCombinations).generateResults(
 //                new LeastUsedCombinationPairFinder(),
 //                new LeastUsedMatchingPairFromListFinder());
 
-        // TODO: create a graph based one - initially simulated using usage on pairs as weightings
-       AllPairsResults results = new GeneratorOfAllPairsSimulatedGraph(pairCombinations).generateResults();
+
+       // results = new GeneratorOfAllPairsSimulatedGraph(pairCombinations).generateResults();
+
+        // TODO: create a graph based one
+         results = new GeneratorOfAllPairsUsingGraph(pairCombinations, combinator.getGraph(), data).generateResults();
 
 
 

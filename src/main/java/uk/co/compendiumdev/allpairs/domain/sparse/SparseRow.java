@@ -144,4 +144,11 @@ public class SparseRow {
         return names;
     }
 
+    public SparseRow copyThis() {
+        SparseRow copy = new SparseRow();
+        for(NameValue cell : columns){
+            copy.addColumn(new NameValuePair(cell.getName(), cell.getValue()));
+        }
+        return copy;
+    }
 }

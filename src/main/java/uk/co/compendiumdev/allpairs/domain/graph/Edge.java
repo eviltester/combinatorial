@@ -53,7 +53,7 @@ public class Edge implements PairCombination {
 
     @Override
     public String toString() {
-        return String.format("%s (used %d) x %s (used %d) - %s, %s (used %d) %s", getLeftName(), getLeft().getWeighting(), getRightName(), getRight().getWeighting(), getLeftValue(), getRightValue(), getUsageCount());
+        return String.format("%s (used %d) x %s (used %d) - %s, %s (used %d)", getLeftName(), getLeft().getWeighting(), getRightName(), getRight().getWeighting(), getLeftValue(), getRightValue(), getUsageCount());
     }
 
     @Override

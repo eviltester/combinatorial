@@ -6,7 +6,6 @@ import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePairCombination;
 import uk.co.compendiumdev.allpairs.domain.WeightedNameValuePair;
 import uk.co.compendiumdev.allpairs.domain.results.AllPairsResults;
 import uk.co.compendiumdev.allpairs.domain.results.ResultsRow;
-import uk.co.compendiumdev.allpairs.domain.sparse.NameValueCombination;
 import uk.co.compendiumdev.allpairs.domain.sparse.PairCombination;
 
 import java.util.*;
