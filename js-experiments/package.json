@@ -1,0 +1,16 @@
+{
+  "name": "combinatorial-js-experiments",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "JavaScript n-wise combinatorial generation experiments.",
+  "scripts": {
+    "generate:strategies": "node generate-evolution-strategy-files.mjs",
+    "report": "node --expose-gc generate-n-wise-algorithm-report.mjs --run",
+    "report:cached": "node generate-n-wise-algorithm-report.mjs",
+    "compare:stable": "node --expose-gc generate-comparison-to-other-strategies.mjs",
+    "smoke": "node smoke-test.mjs",
+    "check": "node --check generate-n-wise-algorithm-report.mjs && node --check generate-comparison-to-other-strategies.mjs && node --check experimentalNWiseGenerator.js && node --check strategies/evolutionLookaheadShared.js",
+    "test": "npm run check && npm run smoke"
+  }
+}
